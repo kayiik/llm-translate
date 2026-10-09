@@ -1,0 +1,60 @@
+{
+  "input": {
+    "model": "claude-test",
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "content_filter",
+          "index": 0,
+          "message": {
+            "content": "partial",
+            "role": "assistant"
+          }
+        },
+        {
+          "finish_reason": "stop",
+          "index": 1,
+          "message": {
+            "content": "other",
+            "role": "assistant"
+          }
+        }
+      ],
+      "id": "chatcmpl-multi"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "approximated",
+        "detail": "content_filter maps to Anthropic end_turn",
+        "path": "choices.0.finish_reason",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "only the first Chat choice is converted",
+        "path": "choices.1",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "content": [
+      {
+        "text": "partial",
+        "type": "text"
+      }
+    ],
+    "id": "chatcmpl-multi",
+    "model": "claude-test",
+    "role": "assistant",
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0
+    }
+  }
+}

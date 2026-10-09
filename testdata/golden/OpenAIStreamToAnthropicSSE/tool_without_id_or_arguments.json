@@ -1,0 +1,14 @@
+{
+  "input": [
+    "{\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"name\":\"ping\"}}]},\"finish_reason\":null}]}"
+  ],
+  "report": {},
+  "value": [
+    "event: message_start\ndata: {\"message\":{\"content\":[],\"id\":\"msg_RANDOM\",\"model\":\"claude-test\",\"role\":\"assistant\",\"stop_reason\":null,\"stop_sequence\":null,\"type\":\"message\",\"usage\":{\"input_tokens\":0,\"output_tokens\":0}},\"type\":\"message_start\"}\n\n",
+    "event: ping\ndata: {\"type\":\"ping\"}\n\n",
+    "event: content_block_start\ndata: {\"content_block\":{\"id\":\"toolu_RANDOM\",\"input\":{},\"name\":\"ping\",\"type\":\"tool_use\"},\"index\":0,\"type\":\"content_block_start\"}\n\n",
+    "event: content_block_stop\ndata: {\"index\":0,\"type\":\"content_block_stop\"}\n\n",
+    "event: message_delta\ndata: {\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"type\":\"message_delta\",\"usage\":{\"output_tokens\":0}}\n\n",
+    "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n"
+  ]
+}

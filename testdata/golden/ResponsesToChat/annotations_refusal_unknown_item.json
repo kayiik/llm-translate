@@ -1,0 +1,72 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "id": "resp_mixed",
+      "output": [
+        {
+          "id": "ws_1",
+          "status": "completed",
+          "type": "web_search_call"
+        },
+        {
+          "content": [
+            {
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url": "https://example.com"
+                }
+              ],
+              "text": "cited",
+              "type": "output_text"
+            },
+            {
+              "refusal": "no",
+              "type": "refusal"
+            }
+          ],
+          "role": "assistant",
+          "type": "message"
+        }
+      ]
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "Responses output item is not representable by Chat",
+        "path": "output.0",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "text annotations are not emitted by Chat",
+        "path": "output.1.content.0.annotations",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "Responses content part is not representable by Chat",
+        "path": "output.1.content.1",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "cited",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "resp_mixed",
+    "model": "gpt-test",
+    "object": "chat.completion"
+  }
+}

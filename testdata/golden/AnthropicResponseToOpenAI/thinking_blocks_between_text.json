@@ -1,0 +1,60 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "content": [
+        {
+          "text": "a",
+          "type": "text"
+        },
+        {
+          "signature": "s",
+          "thinking": "t",
+          "type": "thinking"
+        },
+        {
+          "text": "b",
+          "type": "text"
+        }
+      ],
+      "id": "msg_v2",
+      "stop_reason": "end_turn"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "Anthropic content block is not representable by Chat",
+        "path": "content.1",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning is not emitted by Chat",
+        "path": "content.1.reasoning",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "ab",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "msg_v2",
+    "model": "gpt-test",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    }
+  }
+}

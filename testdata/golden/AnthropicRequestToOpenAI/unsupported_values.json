@@ -1,0 +1,92 @@
+{
+  "incompatible": [
+    "messages.0.content.0",
+    "messages.0.extra",
+    "messages.1.content",
+    "thinking",
+    "thinking.budget_tokens",
+    "tool_choice",
+    "top_k"
+  ],
+  "input": {
+    "messages": [
+      {
+        "content": [
+          {
+            "source": {
+              "data": "doc",
+              "type": "text"
+            },
+            "type": "document"
+          }
+        ],
+        "extra": true,
+        "role": "user"
+      },
+      {
+        "content": "inline system",
+        "role": "system"
+      }
+    ],
+    "model": "claude-test",
+    "thinking": {
+      "budget_tokens": 1024,
+      "type": "enabled"
+    },
+    "tool_choice": {
+      "name": "x",
+      "type": "auto"
+    },
+    "top_k": 5
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.0.content.0",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.0.extra",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.1.content",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "thinking",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "thinking.budget_tokens",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "tool_choice",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "top_k",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": {},
+    "Messages": null
+  }
+}

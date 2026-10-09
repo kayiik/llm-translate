@@ -1,0 +1,40 @@
+{
+  "id": "chatcmpl-fixture",
+  "object": "chat.completion",
+  "created": 1700000000,
+  "model": "gemini-test",
+  "system_fingerprint": null,
+  "service_tier": "default",
+  "x_provider": {"region": "fixture"},
+  "choices": [
+    {
+      "index": 0,
+      "finish_reason": "tool_calls",
+      "logprobs": null,
+      "message": {
+        "role": "assistant",
+        "content": "calling",
+        "reasoning_details": [{"type": "reasoning.summary", "summary": "planned", "index": 0}],
+        "tool_calls": [
+          {
+            "id": "call_1",
+            "type": "function",
+            "function": {"name": "lookup", "arguments": "{}"},
+            "extra_content": {"google": {"thought_signature": "sig-thought-2"}}
+          }
+        ],
+        "annotations": [],
+        "x_message": 1.50
+      },
+      "x_choice": "kept"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "completion_tokens": 5,
+    "total_tokens": 17,
+    "prompt_tokens_details": {"cached_tokens": 8},
+    "completion_tokens_details": {"reasoning_tokens": 3},
+    "x_usage": 0.0
+  }
+}

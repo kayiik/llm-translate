@@ -1,0 +1,39 @@
+{
+  "input": {
+    "_llmgw_preamble": "gateway preamble",
+    "messages": [
+      {
+        "content": [
+          {
+            "input": {},
+            "name": "noid",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "model": "claude-test",
+    "system": "sys"
+  },
+  "value": [
+    {
+      "content": "sys",
+      "role": "system"
+    },
+    {
+      "content": null,
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{}",
+            "name": "noid"
+          },
+          "id": "call_RANDOM",
+          "type": "function"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "input": {
+    "input": [
+      {
+        "content": [
+          {
+            "text": "hello ",
+            "type": "input_text"
+          },
+          {
+            "text": "world",
+            "type": "input_text"
+          }
+        ],
+        "role": "user",
+        "type": "message"
+      }
+    ],
+    "tool_choice": "auto"
+  },
+  "report": {},
+  "value": {
+    "Keywords": {
+      "tool_choice": "auto"
+    },
+    "Messages": [
+      {
+        "content": "hello world",
+        "role": "user"
+      }
+    ]
+  }
+}

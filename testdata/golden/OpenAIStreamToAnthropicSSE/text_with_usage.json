@@ -1,0 +1,17 @@
+{
+  "input": [
+    "{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hi\"},\"finish_reason\":null}]}",
+    "{\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"length\"}]}",
+    "{\"choices\":[],\"usage\":{\"prompt_tokens\":9,\"completion_tokens\":2,\"total_tokens\":11}}"
+  ],
+  "report": {},
+  "value": [
+    "event: message_start\ndata: {\"message\":{\"content\":[],\"id\":\"msg_RANDOM\",\"model\":\"claude-test\",\"role\":\"assistant\",\"stop_reason\":null,\"stop_sequence\":null,\"type\":\"message\",\"usage\":{\"input_tokens\":0,\"output_tokens\":0}},\"type\":\"message_start\"}\n\n",
+    "event: ping\ndata: {\"type\":\"ping\"}\n\n",
+    "event: content_block_start\ndata: {\"content_block\":{\"text\":\"\",\"type\":\"text\"},\"index\":0,\"type\":\"content_block_start\"}\n\n",
+    "event: content_block_delta\ndata: {\"delta\":{\"text\":\"Hi\",\"type\":\"text_delta\"},\"index\":0,\"type\":\"content_block_delta\"}\n\n",
+    "event: content_block_stop\ndata: {\"index\":0,\"type\":\"content_block_stop\"}\n\n",
+    "event: message_delta\ndata: {\"delta\":{\"stop_reason\":\"max_tokens\",\"stop_sequence\":null},\"type\":\"message_delta\",\"usage\":{\"output_tokens\":2}}\n\n",
+    "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n"
+  ]
+}

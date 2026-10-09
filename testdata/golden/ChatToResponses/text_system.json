@@ -1,0 +1,48 @@
+{
+  "input": {
+    "kw": {
+      "max_tokens": 128,
+      "reasoning_effort": "high",
+      "temperature": 0.5,
+      "top_p": 0.9
+    },
+    "messages": [
+      {
+        "content": "be terse",
+        "role": "system"
+      },
+      {
+        "content": "hello",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": false
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "renamed",
+        "detail": "converted to max_output_tokens",
+        "path": "max_tokens",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "input": [
+      {
+        "content": "hello",
+        "role": "user"
+      }
+    ],
+    "instructions": "be terse",
+    "max_output_tokens": 128,
+    "model": "gpt-test",
+    "reasoning": {
+      "effort": "high"
+    },
+    "temperature": 0.5,
+    "top_p": 0.9
+  }
+}

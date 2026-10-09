@@ -1,0 +1,134 @@
+{
+  "input": {
+    "kw": {
+      "metadata": {
+        "trace": "t1"
+      },
+      "tool_choice": {
+        "function": {
+          "name": "get_weather"
+        },
+        "type": "function"
+      },
+      "tools": [
+        {
+          "function": {
+            "description": "w",
+            "name": "get_weather",
+            "parameters": {
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "strict": true
+          },
+          "type": "function"
+        }
+      ]
+    },
+    "messages": [
+      {
+        "content": "weather?",
+        "role": "user"
+      },
+      {
+        "content": "checking",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"city\":\"x\"}",
+              "name": "get_weather"
+            },
+            "id": "call_a",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "sunny",
+        "role": "tool",
+        "tool_call_id": "call_a"
+      },
+      {
+        "content": "It is sunny.",
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "text": "thanks",
+            "type": "text"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": false
+  },
+  "report": {},
+  "value": {
+    "input": [
+      {
+        "content": "weather?",
+        "role": "user"
+      },
+      {
+        "content": "checking",
+        "role": "assistant"
+      },
+      {
+        "arguments": "{\"city\":\"x\"}",
+        "call_id": "call_a",
+        "name": "get_weather",
+        "type": "function_call"
+      },
+      {
+        "call_id": "call_a",
+        "output": "sunny",
+        "type": "function_call_output"
+      },
+      {
+        "content": "It is sunny.",
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "text": "thanks",
+            "type": "input_text"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "metadata": {
+      "trace": "t1"
+    },
+    "model": "gpt-test",
+    "tool_choice": {
+      "name": "get_weather",
+      "type": "function"
+    },
+    "tools": [
+      {
+        "description": "w",
+        "name": "get_weather",
+        "parameters": {
+          "properties": {
+            "city": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "strict": true,
+        "type": "function"
+      }
+    ]
+  }
+}

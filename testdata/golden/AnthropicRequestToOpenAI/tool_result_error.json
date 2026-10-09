@@ -1,0 +1,73 @@
+{
+  "incompatible": [
+    "messages.1.content.0"
+  ],
+  "input": {
+    "messages": [
+      {
+        "content": [
+          {
+            "id": "toolu_err",
+            "input": {
+              "command": "exit 1"
+            },
+            "name": "bash",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "content": "failed",
+            "is_error": true,
+            "tool_use_id": "toolu_err",
+            "type": "tool_result"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "claude-test",
+    "tool_choice": {
+      "type": "any"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.1.content.0",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": {
+      "tool_choice": "required"
+    },
+    "Messages": [
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"command\":\"exit 1\"}",
+              "name": "bash"
+            },
+            "id": "toolu_err",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "failed",
+        "role": "tool",
+        "tool_call_id": "toolu_err"
+      }
+    ]
+  }
+}

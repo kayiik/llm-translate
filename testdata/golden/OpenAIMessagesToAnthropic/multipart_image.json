@@ -1,0 +1,55 @@
+{
+  "input": [
+    {
+      "content": [
+        {
+          "text": "see",
+          "type": "text"
+        },
+        {
+          "image_url": {
+            "url": "data:image/png;base64,AA=="
+          },
+          "type": "image_url"
+        },
+        {
+          "text": "this",
+          "type": "text"
+        }
+      ],
+      "role": "user"
+    },
+    {
+      "content": [
+        {
+          "text": "a",
+          "type": "text"
+        },
+        {
+          "text": "b",
+          "type": "text"
+        }
+      ],
+      "role": "assistant"
+    }
+  ],
+  "report": {},
+  "value": {
+    "Messages": [
+      {
+        "content": "see\nthis",
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "text": "a\nb",
+            "type": "text"
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "System": ""
+  }
+}

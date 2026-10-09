@@ -1,0 +1,25 @@
+{
+  "error": "Responses built-in tools require a native Responses model",
+  "input": {
+    "input": "hi",
+    "tools": [
+      {
+        "type": "web_search"
+      }
+    ]
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "Responses built-in tools require a native Responses model",
+        "path": "$",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": null,
+    "Messages": null
+  }
+}

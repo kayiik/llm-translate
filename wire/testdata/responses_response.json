@@ -1,0 +1,41 @@
+{
+  "id": "resp_fixture",
+  "object": "response",
+  "created_at": 1700000000,
+  "status": "incomplete",
+  "background": false,
+  "error": null,
+  "incomplete_details": {"reason": "max_output_tokens"},
+  "instructions": null,
+  "model": "gpt-test",
+  "output_text": "partial",
+  "parallel_tool_calls": true,
+  "previous_response_id": null,
+  "reasoning": {"effort": "medium", "summary": null},
+  "tools": [],
+  "top_p": 1.0,
+  "x_vendor": {"cache_control": {"type": "ephemeral"}},
+  "output": [
+    {"type": "reasoning", "id": "rs_1", "summary": [], "encrypted_content": "opaque==", "content": [{"type": "reasoning_text", "text": "thinking"}]},
+    {
+      "type": "message",
+      "id": "msg_1",
+      "status": "incomplete",
+      "role": "assistant",
+      "content": [
+        {"type": "output_text", "text": "partial", "annotations": [{"type": "url_citation", "url": "https://example.com", "start_index": 0, "end_index": 7}], "logprobs": []},
+        {"type": "refusal", "refusal": ""}
+      ],
+      "reasoning_details": [{"type": "reasoning.summary", "summary": "s"}]
+    },
+    {"type": "function_call", "id": "fc_1", "call_id": "call_1", "name": "lookup", "arguments": "", "status": "in_progress", "extra_content": {"google": {"thought_signature": "sig-thought-5"}}},
+    {"type": "web_search_call", "id": "ws_1", "status": "completed", "action": {"type": "search", "query": "go"}}
+  ],
+  "usage": {
+    "input_tokens": 50,
+    "input_tokens_details": {"cached_tokens": 32},
+    "output_tokens": 70,
+    "output_tokens_details": {"reasoning_tokens": 64},
+    "total_tokens": 120
+  }
+}

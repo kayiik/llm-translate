@@ -1,0 +1,15 @@
+{
+  "input": null,
+  "report": {
+    "completed": false,
+    "error": "Anthropic stream ended without message_stop",
+    "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "input_tokens": 0,
+      "output_tokens": 0
+    }
+  },
+  "value": [],
+  "value_include_usage": []
+}

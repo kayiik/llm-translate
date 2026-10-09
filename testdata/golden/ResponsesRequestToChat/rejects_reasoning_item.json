@@ -1,0 +1,36 @@
+{
+  "error": "Responses input type \"reasoning\" is not supported by Chat fallback",
+  "input": {
+    "input": [
+      {
+        "encrypted_content": "opaque",
+        "id": "rs_1",
+        "summary": [
+          {
+            "text": "thinking",
+            "type": "summary_text"
+          }
+        ],
+        "type": "reasoning"
+      },
+      {
+        "content": "hi",
+        "role": "user"
+      }
+    ]
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "Responses input type \"reasoning\" is not supported by Chat fallback",
+        "path": "$",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": null,
+    "Messages": null
+  }
+}

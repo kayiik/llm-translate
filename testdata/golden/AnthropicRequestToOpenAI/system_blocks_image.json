@@ -1,0 +1,63 @@
+{
+  "incompatible": null,
+  "input": {
+    "max_tokens": 16,
+    "messages": [
+      {
+        "content": [
+          {
+            "text": "describe",
+            "type": "text"
+          },
+          {
+            "source": {
+              "data": "AA==",
+              "media_type": "image/png",
+              "type": "base64"
+            },
+            "type": "image"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "claude-test",
+    "system": [
+      {
+        "text": "rule one",
+        "type": "text"
+      },
+      {
+        "text": "rule two",
+        "type": "text"
+      }
+    ]
+  },
+  "report": {},
+  "value": {
+    "Keywords": {
+      "max_tokens": 16
+    },
+    "Messages": [
+      {
+        "content": "rule one\n\nrule two",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "describe",
+            "type": "text"
+          },
+          {
+            "image_url": {
+              "url": "data:image/png;base64,AA=="
+            },
+            "type": "image_url"
+          }
+        ],
+        "role": "user"
+      }
+    ]
+  }
+}

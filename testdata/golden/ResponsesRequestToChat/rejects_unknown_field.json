@@ -1,0 +1,25 @@
+{
+  "error": "Responses field \"text\" requires a native Responses model",
+  "input": {
+    "input": "hi",
+    "text": {
+      "format": {
+        "type": "json_schema"
+      }
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "Responses field requires a native Responses model",
+        "path": "text",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": null,
+    "Messages": null
+  }
+}

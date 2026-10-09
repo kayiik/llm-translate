@@ -1,0 +1,8 @@
+[
+  {"id": "chatcmpl-s", "object": "chat.completion.chunk", "created": 1700000000, "model": "gemini-test", "choices": [{"index": 0, "delta": {"role": "assistant", "content": ""}, "finish_reason": null, "logprobs": null}], "usage": null},
+  {"id": "chatcmpl-s", "object": "chat.completion.chunk", "choices": [{"index": 0, "delta": {"reasoning_details": [{"type": "reasoning.text", "text": "hmm", "index": 0}]}, "finish_reason": null}]},
+  {"id": "chatcmpl-s", "object": "chat.completion.chunk", "choices": [{"index": 0, "delta": {"tool_calls": [{"index": 0, "id": "call_1", "type": "function", "function": {"name": "lookup", "arguments": ""}, "extra_content": {"google": {"thought_signature": "sig-thought-3"}}}]}, "finish_reason": null}]},
+  {"id": "chatcmpl-s", "object": "chat.completion.chunk", "choices": [{"index": 0, "delta": {"tool_calls": [{"index": 0, "function": {"arguments": "{\"q\":1.0}"}}]}, "finish_reason": null}], "x_obfuscation": "abc"},
+  {"id": "chatcmpl-s", "object": "chat.completion.chunk", "choices": [{"index": 0, "delta": {}, "finish_reason": "tool_calls"}]},
+  {"id": "chatcmpl-s", "object": "chat.completion.chunk", "choices": [], "usage": {"prompt_tokens": 3, "completion_tokens": 4, "total_tokens": 7}}
+]

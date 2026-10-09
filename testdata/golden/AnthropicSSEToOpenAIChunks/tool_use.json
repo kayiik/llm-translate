@@ -1,0 +1,22 @@
+{
+  "input": [
+    "data: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_t\",\"content\":[]}}",
+    "data: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}",
+    "data: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Calling\"}}",
+    "data: {\"type\":\"content_block_stop\",\"index\":0}",
+    "data: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"tool_use\",\"id\":\"toolu_s\",\"name\":\"search\",\"input\":{}}}",
+    "data: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"\"}}",
+    "data: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"q\\\":\\\"go\\\"}\"}}",
+    "data: {\"type\":\"content_block_stop\",\"index\":1}",
+    "data: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"tool_use\"}}",
+    "data: {\"type\":\"message_stop\"}"
+  ],
+  "report": {},
+  "value": [
+    "{\"choices\":[{\"delta\":{\"content\":\"\",\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"content\":\"Calling\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"tool_calls\":[{\"function\":{\"arguments\":\"\",\"name\":\"search\"},\"id\":\"toolu_s\",\"index\":0,\"type\":\"function\"}]},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"tool_calls\":[{\"function\":{\"arguments\":\"{\\\"q\\\":\\\"go\\\"}\"},\"index\":0}]},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{},\"finish_reason\":\"tool_calls\",\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}"
+  ]
+}

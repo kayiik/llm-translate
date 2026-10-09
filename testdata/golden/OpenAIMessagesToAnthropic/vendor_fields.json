@@ -1,0 +1,218 @@
+{
+  "input": [
+    {
+      "content": [
+        {
+          "cache_control": {
+            "ttl": "1h",
+            "type": "ephemeral"
+          },
+          "text": "cached policy",
+          "type": "text"
+        },
+        {
+          "text": "tail",
+          "type": "text"
+        }
+      ],
+      "role": "system"
+    },
+    {
+      "content": [
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "text": "look",
+          "type": "text"
+        },
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "image_url": {
+            "url": "data:image/png;base64,AA=="
+          },
+          "type": "image_url"
+        },
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "input_audio": {
+            "data": "AA==",
+            "format": "wav"
+          },
+          "type": "input_audio"
+        }
+      ],
+      "role": "user"
+    },
+    {
+      "content": null,
+      "reasoning_details": [
+        {
+          "signature": "sig-r",
+          "text": "thinking",
+          "type": "reasoning.text"
+        }
+      ],
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "extra_content": {
+            "google": {
+              "thought_signature": "sig-thought"
+            }
+          },
+          "function": {
+            "arguments": "{\"q\":\"go\"}",
+            "name": "lookup"
+          },
+          "id": "call_1",
+          "type": "function"
+        },
+        {
+          "extra_content": {
+            "google": {
+              "thought_signature": ""
+            }
+          },
+          "function": {
+            "arguments": "{}",
+            "name": "lookup"
+          },
+          "id": "call_2",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "text": "result",
+          "type": "text"
+        }
+      ],
+      "role": "tool",
+      "tool_call_id": "call_1"
+    },
+    {
+      "content": "second",
+      "role": "tool",
+      "tool_call_id": "call_2"
+    },
+    {
+      "content": "thanks",
+      "role": "user"
+    }
+  ],
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "cache_control is not representable by Anthropic Messages",
+        "path": "messages.1.content.1.cache_control",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "cache_control is not representable by Anthropic Messages",
+        "path": "messages.1.content.2.cache_control",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning_details are not representable by Anthropic Messages",
+        "path": "messages.2.reasoning_details",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by Anthropic Messages, so the next turn cannot replay it",
+        "path": "messages.2.tool_calls.0.extra_content.google.thought_signature",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Messages": [
+      {
+        "content": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "look",
+            "type": "text"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "id": "call_1",
+            "input": {
+              "q": "go"
+            },
+            "name": "lookup",
+            "type": "tool_use"
+          },
+          {
+            "id": "call_2",
+            "input": {},
+            "name": "lookup",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "content": [
+              {
+                "cache_control": {
+                  "type": "ephemeral"
+                },
+                "text": "result",
+                "type": "text"
+              }
+            ],
+            "tool_use_id": "call_1",
+            "type": "tool_result"
+          },
+          {
+            "content": "second",
+            "tool_use_id": "call_2",
+            "type": "tool_result"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": "thanks",
+        "role": "user"
+      }
+    ],
+    "System": "cached policy\ntail",
+    "SystemBlocks": [
+      {
+        "cache_control": {
+          "ttl": "1h",
+          "type": "ephemeral"
+        },
+        "text": "cached policy",
+        "type": "text"
+      },
+      {
+        "text": "tail",
+        "type": "text"
+      }
+    ]
+  }
+}

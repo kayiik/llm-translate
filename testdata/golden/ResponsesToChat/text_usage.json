@@ -1,0 +1,50 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "id": "resp_fixture",
+      "object": "response",
+      "output": [
+        {
+          "content": [
+            {
+              "annotations": [],
+              "text": "Hi there!",
+              "type": "output_text"
+            }
+          ],
+          "id": "msg_fixture",
+          "role": "assistant",
+          "type": "message"
+        }
+      ],
+      "status": "completed",
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 3,
+        "total_tokens": 13
+      }
+    }
+  },
+  "report": {},
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "Hi there!",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "resp_fixture",
+    "model": "gpt-test",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 3,
+      "prompt_tokens": 10,
+      "total_tokens": 13
+    }
+  }
+}

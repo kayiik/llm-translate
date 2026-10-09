@@ -1,0 +1,99 @@
+{
+  "input": {
+    "chat": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "reasoning_content": "thinking out loud",
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{}",
+                  "name": "lookup",
+                  "thought_signature": "sig-function"
+                },
+                "id": "call_1",
+                "thought_signature": "sig-call",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "id": "chatcmpl-alt"
+    },
+    "model": "gpt-test"
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "reasoning_content is not representable by OpenAI Responses",
+        "path": "choices.0.message.reasoning_content",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by OpenAI Responses, so the next turn cannot replay it",
+        "path": "choices.0.message.tool_calls.0.function.thought_signature",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by OpenAI Responses, so the next turn cannot replay it",
+        "path": "choices.0.message.tool_calls.0.thought_signature",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "background": false,
+    "created_at": "NORMALIZED",
+    "error": null,
+    "id": "resp_alt",
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "metadata": {},
+    "model": "gpt-test",
+    "object": "response",
+    "output": [
+      {
+        "arguments": "{}",
+        "call_id": "call_1",
+        "id": "call_1",
+        "name": "lookup",
+        "status": "completed",
+        "type": "function_call"
+      }
+    ],
+    "output_text": "",
+    "parallel_tool_calls": true,
+    "previous_response_id": null,
+    "reasoning": {
+      "effort": null,
+      "summary": null
+    },
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": null,
+    "text": {
+      "format": {
+        "type": "text"
+      }
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": null,
+    "truncation": "disabled",
+    "usage": null,
+    "user": null
+  }
+}

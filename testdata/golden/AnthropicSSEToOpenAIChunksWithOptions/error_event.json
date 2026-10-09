@@ -1,0 +1,27 @@
+{
+  "input": [
+    "data: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_e\",\"content\":[],\"usage\":{\"input_tokens\":8,\"output_tokens\":1}}}",
+    "data: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"partial\"}}",
+    "",
+    "event: error",
+    "data: {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"Overloaded\"}}"
+  ],
+  "report": {
+    "completed": false,
+    "error": "Anthropic stream overloaded_error: Overloaded",
+    "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "input_tokens": 8,
+      "output_tokens": 1
+    }
+  },
+  "value": [
+    "{\"choices\":[{\"delta\":{\"content\":\"\",\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"content\":\"partial\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}"
+  ],
+  "value_include_usage": [
+    "{\"choices\":[{\"delta\":{\"content\":\"\",\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\",\"usage\":null}",
+    "{\"choices\":[{\"delta\":{\"content\":\"partial\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\",\"usage\":null}"
+  ]
+}

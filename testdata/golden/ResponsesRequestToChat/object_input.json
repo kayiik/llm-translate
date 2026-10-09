@@ -1,0 +1,18 @@
+{
+  "input": {
+    "input": {
+      "content": "rules",
+      "role": "developer"
+    }
+  },
+  "report": {},
+  "value": {
+    "Keywords": {},
+    "Messages": [
+      {
+        "content": "rules",
+        "role": "developer"
+      }
+    ]
+  }
+}

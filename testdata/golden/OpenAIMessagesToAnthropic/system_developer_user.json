@@ -1,0 +1,40 @@
+{
+  "input": [
+    {
+      "content": "sys",
+      "role": "system"
+    },
+    {
+      "content": [
+        {
+          "text": "dev",
+          "type": "text"
+        }
+      ],
+      "role": "developer"
+    },
+    {
+      "content": "hello",
+      "role": "user"
+    }
+  ],
+  "report": {
+    "losses": [
+      {
+        "class": "approximated",
+        "detail": "developer instruction is merged into Anthropic system text",
+        "path": "messages.1.role",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "Messages": [
+      {
+        "content": "hello",
+        "role": "user"
+      }
+    ],
+    "System": "sys\n\ndev"
+  }
+}

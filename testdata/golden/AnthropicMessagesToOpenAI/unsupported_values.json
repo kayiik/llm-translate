@@ -1,0 +1,39 @@
+{
+  "input": {
+    "messages": [
+      {
+        "content": [
+          {
+            "source": {
+              "data": "doc",
+              "type": "text"
+            },
+            "type": "document"
+          }
+        ],
+        "extra": true,
+        "role": "user"
+      },
+      {
+        "content": "inline system",
+        "role": "system"
+      }
+    ],
+    "model": "claude-test",
+    "thinking": {
+      "budget_tokens": 1024,
+      "type": "enabled"
+    },
+    "tool_choice": {
+      "name": "x",
+      "type": "auto"
+    },
+    "top_k": 5
+  },
+  "value": [
+    {
+      "content": "inline system",
+      "role": "system"
+    }
+  ]
+}

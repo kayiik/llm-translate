@@ -1,0 +1,25 @@
+{
+  "id": "msg_fixture",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-test",
+  "content": [
+    {"type": "thinking", "thinking": "hmm", "signature": "sig-b"},
+    {"type": "text", "text": "Answer", "citations": [{"type": "char_location", "cited_text": "x", "document_index": 0, "start_char_index": 0, "end_char_index": 1}]},
+    {"type": "tool_use", "id": "toolu_1", "name": "search", "input": {}},
+    {"type": "server_tool_use", "id": "srvtoolu_1", "name": "web_search", "input": {"query": "go"}},
+    {"type": "web_search_tool_result", "tool_use_id": "srvtoolu_1", "content": [{"type": "web_search_result", "url": "https://example.com", "title": "Example"}]}
+  ],
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "container": null,
+  "usage": {
+    "input_tokens": 100,
+    "output_tokens": 20,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 80,
+    "cache_creation": {"ephemeral_5m_input_tokens": 0, "ephemeral_1h_input_tokens": 0},
+    "server_tool_use": {"web_search_requests": 1},
+    "service_tier": "standard"
+  }
+}

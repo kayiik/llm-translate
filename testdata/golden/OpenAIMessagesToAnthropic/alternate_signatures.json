@@ -1,0 +1,161 @@
+{
+  "input": [
+    {
+      "content": "weather?",
+      "role": "user"
+    },
+    {
+      "content": "checking",
+      "reasoning_content": "need a lookup",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{}",
+            "name": "lookup",
+            "thought_signature": "sig-function"
+          },
+          "id": "call_1",
+          "type": "function"
+        },
+        {
+          "function": {
+            "arguments": "{}",
+            "name": "lookup"
+          },
+          "id": "call_2",
+          "thought_signature": "sig-call",
+          "type": "function"
+        },
+        {
+          "extra_content": {
+            "google": {
+              "thought_signature": "sig-google"
+            }
+          },
+          "function": {
+            "arguments": "{}",
+            "name": "lookup",
+            "thought_signature": ""
+          },
+          "id": "call_3",
+          "thought_signature": "",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "one",
+      "role": "tool",
+      "tool_call_id": "call_1"
+    },
+    {
+      "content": "two",
+      "role": "tool",
+      "tool_call_id": "call_2"
+    },
+    {
+      "content": "three",
+      "role": "tool",
+      "tool_call_id": "call_3"
+    },
+    {
+      "content": "done",
+      "reasoning_content": "",
+      "role": "assistant"
+    }
+  ],
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "reasoning_content is not representable by Anthropic Messages",
+        "path": "messages.1.reasoning_content",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by Anthropic Messages, so the next turn cannot replay it",
+        "path": "messages.1.tool_calls.0.function.thought_signature",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by Anthropic Messages, so the next turn cannot replay it",
+        "path": "messages.1.tool_calls.1.thought_signature",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by Anthropic Messages, so the next turn cannot replay it",
+        "path": "messages.1.tool_calls.2.extra_content.google.thought_signature",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Messages": [
+      {
+        "content": "weather?",
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "text": "checking",
+            "type": "text"
+          },
+          {
+            "id": "call_1",
+            "input": {},
+            "name": "lookup",
+            "type": "tool_use"
+          },
+          {
+            "id": "call_2",
+            "input": {},
+            "name": "lookup",
+            "type": "tool_use"
+          },
+          {
+            "id": "call_3",
+            "input": {},
+            "name": "lookup",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "content": "one",
+            "tool_use_id": "call_1",
+            "type": "tool_result"
+          },
+          {
+            "content": "two",
+            "tool_use_id": "call_2",
+            "type": "tool_result"
+          },
+          {
+            "content": "three",
+            "tool_use_id": "call_3",
+            "type": "tool_result"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "text": "done",
+            "type": "text"
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "System": ""
+  }
+}

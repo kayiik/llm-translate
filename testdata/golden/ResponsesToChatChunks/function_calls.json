@@ -1,0 +1,37 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "id": "resp_tools",
+      "output": [
+        {
+          "arguments": "{\"a\":1}",
+          "call_id": "call_9",
+          "name": "do_thing",
+          "type": "function_call"
+        },
+        {
+          "arguments": "{}",
+          "id": "fc_2",
+          "name": "other",
+          "type": "function_call"
+        }
+      ]
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "approximated",
+        "detail": "buffered response is rendered as synthetic Chat chunks",
+        "path": "stream",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": [
+    "{\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"resp_tools\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"tool_calls\":[{\"function\":{\"arguments\":\"{\\\"a\\\":1}\",\"name\":\"do_thing\"},\"id\":\"call_9\",\"index\":0,\"type\":\"function\"},{\"function\":{\"arguments\":\"{}\",\"name\":\"other\"},\"id\":\"fc_2\",\"index\":1,\"type\":\"function\"}]},\"finish_reason\":null,\"index\":0}],\"id\":\"resp_tools\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{},\"finish_reason\":\"tool_calls\",\"index\":0}],\"id\":\"resp_tools\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}"
+  ]
+}

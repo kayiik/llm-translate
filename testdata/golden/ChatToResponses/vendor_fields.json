@@ -1,0 +1,213 @@
+{
+  "input": {
+    "kw": {},
+    "messages": [
+      {
+        "content": [
+          {
+            "cache_control": {
+              "ttl": "1h",
+              "type": "ephemeral"
+            },
+            "text": "cached policy",
+            "type": "text"
+          },
+          {
+            "text": "tail",
+            "type": "text"
+          }
+        ],
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "look",
+            "type": "text"
+          },
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "image_url": {
+              "url": "data:image/png;base64,AA=="
+            },
+            "type": "image_url"
+          },
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "input_audio": {
+              "data": "AA==",
+              "format": "wav"
+            },
+            "type": "input_audio"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": null,
+        "reasoning_details": [
+          {
+            "signature": "sig-r",
+            "text": "thinking",
+            "type": "reasoning.text"
+          }
+        ],
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "extra_content": {
+              "google": {
+                "thought_signature": "sig-thought"
+              }
+            },
+            "function": {
+              "arguments": "{\"q\":\"go\"}",
+              "name": "lookup"
+            },
+            "id": "call_1",
+            "type": "function"
+          },
+          {
+            "extra_content": {
+              "google": {
+                "thought_signature": ""
+              }
+            },
+            "function": {
+              "arguments": "{}",
+              "name": "lookup"
+            },
+            "id": "call_2",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "result",
+            "type": "text"
+          }
+        ],
+        "role": "tool",
+        "tool_call_id": "call_1"
+      },
+      {
+        "content": "second",
+        "role": "tool",
+        "tool_call_id": "call_2"
+      },
+      {
+        "content": "thanks",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": false
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "cache_control is not representable by OpenAI Responses",
+        "path": "messages.0.content.0.cache_control",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "cache_control is not representable by OpenAI Responses",
+        "path": "messages.1.content.0.cache_control",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "cache_control is not representable by OpenAI Responses",
+        "path": "messages.1.content.1.cache_control",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning_details are not representable by OpenAI Responses",
+        "path": "messages.2.reasoning_details",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by OpenAI Responses, so the next turn cannot replay it",
+        "path": "messages.2.tool_calls.0.extra_content.google.thought_signature",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "cache_control is not representable by OpenAI Responses",
+        "path": "messages.3.content.0.cache_control",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "input": [
+      {
+        "content": [
+          {
+            "text": "look",
+            "type": "input_text"
+          },
+          {
+            "image_url": "data:image/png;base64,AA==",
+            "type": "input_image"
+          },
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "input_audio": {
+              "data": "AA==",
+              "format": "wav"
+            },
+            "type": "input_audio"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "arguments": "{\"q\":\"go\"}",
+        "call_id": "call_1",
+        "name": "lookup",
+        "type": "function_call"
+      },
+      {
+        "arguments": "{}",
+        "call_id": "call_2",
+        "name": "lookup",
+        "type": "function_call"
+      },
+      {
+        "call_id": "call_1",
+        "output": "result",
+        "type": "function_call_output"
+      },
+      {
+        "call_id": "call_2",
+        "output": "second",
+        "type": "function_call_output"
+      },
+      {
+        "content": "thanks",
+        "role": "user"
+      }
+    ],
+    "instructions": "cached policytail",
+    "model": "gpt-test"
+  }
+}

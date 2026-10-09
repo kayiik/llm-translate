@@ -1,0 +1,60 @@
+{
+  "input": {
+    "kw": {
+      "n": 1,
+      "response_format": {
+        "type": "json_object"
+      },
+      "seed": 7,
+      "stop": [
+        "END"
+      ],
+      "temperature": null
+    },
+    "messages": [
+      {
+        "content": "hi",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": false
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "Chat option is not emitted in the Responses request",
+        "path": "n",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "Chat option is not emitted in the Responses request",
+        "path": "response_format",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "Chat option is not emitted in the Responses request",
+        "path": "seed",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "Chat option is not emitted in the Responses request",
+        "path": "stop",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "input": [
+      {
+        "content": "hi",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test"
+  }
+}

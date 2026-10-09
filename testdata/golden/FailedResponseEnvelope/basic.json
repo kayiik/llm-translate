@@ -1,0 +1,47 @@
+{
+  "input": {
+    "code": "server_error",
+    "id": "resp_failed",
+    "message": "upstream failed",
+    "model": "gpt-test"
+  },
+  "value": {
+    "background": false,
+    "created_at": "NORMALIZED",
+    "error": {
+      "code": "server_error",
+      "message": "upstream failed"
+    },
+    "id": "resp_failed",
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "metadata": {},
+    "model": "gpt-test",
+    "object": "response",
+    "output": [],
+    "parallel_tool_calls": true,
+    "previous_response_id": null,
+    "reasoning": {
+      "effort": null,
+      "summary": null
+    },
+    "service_tier": "default",
+    "status": "failed",
+    "store": false,
+    "temperature": null,
+    "text": {
+      "format": {
+        "type": "text"
+      }
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": null,
+    "truncation": "disabled",
+    "usage": null,
+    "user": null
+  }
+}

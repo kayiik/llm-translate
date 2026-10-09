@@ -1,0 +1,42 @@
+{
+  "input": [
+    "{\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning_content\":\"hmm\"},\"finish_reason\":null}]}",
+    "{\"choices\":[{\"index\":0,\"delta\":{\"reasoning_content\":\"\"},\"finish_reason\":null}]}",
+    "{\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_1\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"\",\"thought_signature\":\"sig-function\"}}]},\"finish_reason\":null}]}",
+    "{\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"id\":\"call_2\",\"type\":\"function\",\"function\":{\"name\":\"fetch\",\"arguments\":\"{}\"},\"thought_signature\":\"sig-call\"}]},\"finish_reason\":null}]}",
+    "{\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":4,\"completion_tokens\":5}}"
+  ],
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "reasoning_content is not representable by Anthropic Messages",
+        "path": "choices.0.delta.reasoning_content",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by Anthropic Messages, so the next turn cannot replay it",
+        "path": "choices.0.delta.tool_calls.0.function.thought_signature",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by Anthropic Messages, so the next turn cannot replay it",
+        "path": "choices.0.delta.tool_calls.1.thought_signature",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": [
+    "event: message_start\ndata: {\"message\":{\"content\":[],\"id\":\"msg_RANDOM\",\"model\":\"claude-test\",\"role\":\"assistant\",\"stop_reason\":null,\"stop_sequence\":null,\"type\":\"message\",\"usage\":{\"input_tokens\":0,\"output_tokens\":0}},\"type\":\"message_start\"}\n\n",
+    "event: ping\ndata: {\"type\":\"ping\"}\n\n",
+    "event: content_block_start\ndata: {\"content_block\":{\"id\":\"call_1\",\"input\":{},\"name\":\"lookup\",\"type\":\"tool_use\"},\"index\":0,\"type\":\"content_block_start\"}\n\n",
+    "event: content_block_start\ndata: {\"content_block\":{\"id\":\"call_2\",\"input\":{},\"name\":\"fetch\",\"type\":\"tool_use\"},\"index\":1,\"type\":\"content_block_start\"}\n\n",
+    "event: content_block_delta\ndata: {\"delta\":{\"partial_json\":\"{}\",\"type\":\"input_json_delta\"},\"index\":1,\"type\":\"content_block_delta\"}\n\n",
+    "event: content_block_stop\ndata: {\"index\":0,\"type\":\"content_block_stop\"}\n\n",
+    "event: content_block_stop\ndata: {\"index\":1,\"type\":\"content_block_stop\"}\n\n",
+    "event: message_delta\ndata: {\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"type\":\"message_delta\",\"usage\":{\"output_tokens\":5}}\n\n",
+    "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n"
+  ]
+}

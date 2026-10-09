@@ -1,0 +1,18 @@
+{
+  "input": [
+    "event: error",
+    "data: {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"Internal server error\"}}"
+  ],
+  "report": {
+    "completed": false,
+    "error": "Anthropic stream api_error: Internal server error",
+    "usage": {
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "input_tokens": 0,
+      "output_tokens": 0
+    }
+  },
+  "value": [],
+  "value_include_usage": []
+}

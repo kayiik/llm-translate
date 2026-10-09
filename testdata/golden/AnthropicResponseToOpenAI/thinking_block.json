@@ -1,0 +1,78 @@
+{
+  "input": {
+    "model": "claude-test",
+    "response": {
+      "content": [
+        {
+          "signature": "sig",
+          "thinking": "hmm",
+          "type": "thinking"
+        },
+        {
+          "data": "opaque",
+          "type": "redacted_thinking"
+        },
+        {
+          "text": "answer",
+          "type": "text"
+        }
+      ],
+      "id": "msg_think",
+      "role": "assistant",
+      "stop_reason": "end_turn",
+      "type": "message",
+      "usage": {
+        "input_tokens": 3,
+        "output_tokens": 4
+      }
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "Anthropic content block is not representable by Chat",
+        "path": "content.0",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning is not emitted by Chat",
+        "path": "content.0.reasoning",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "Anthropic content block is not representable by Chat",
+        "path": "content.1",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning is not emitted by Chat",
+        "path": "content.1.reasoning",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "answer",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "msg_think",
+    "model": "claude-test",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 4,
+      "prompt_tokens": 3,
+      "total_tokens": 7
+    }
+  }
+}

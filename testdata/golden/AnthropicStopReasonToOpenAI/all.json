@@ -1,0 +1,18 @@
+{
+  "input": [
+    "end_turn",
+    "max_tokens",
+    "tool_use",
+    "stop_sequence",
+    "pause_turn",
+    null
+  ],
+  "value": [
+    "stop",
+    "length",
+    "tool_calls",
+    "stop",
+    "stop",
+    ""
+  ]
+}

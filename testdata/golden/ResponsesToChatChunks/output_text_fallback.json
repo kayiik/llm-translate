@@ -1,0 +1,23 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "output_text": "from convenience field"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "approximated",
+        "detail": "buffered response is rendered as synthetic Chat chunks",
+        "path": "stream",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": [
+    "{\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"content\":\"from convenience field\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "input": [
+    "data: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_d\",\"content\":[],\"usage\":{\"input_tokens\":5,\"cache_creation_input_tokens\":2,\"output_tokens\":1}}}",
+    "data: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"searched\"}}",
+    "data: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\"},\"usage\":{\"input_tokens\":12,\"cache_read_input_tokens\":3,\"output_tokens\":9,\"server_tool_use\":{\"web_search_requests\":1}}}",
+    "data: {\"type\":\"message_stop\"}"
+  ],
+  "report": {
+    "completed": true,
+    "error": null,
+    "usage": {
+      "cache_creation_input_tokens": 2,
+      "cache_read_input_tokens": 3,
+      "input_tokens": 12,
+      "output_tokens": 9
+    }
+  },
+  "value": [
+    "{\"choices\":[{\"delta\":{\"content\":\"\",\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"content\":\"searched\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}"
+  ],
+  "value_include_usage": [
+    "{\"choices\":[{\"delta\":{\"content\":\"\",\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\",\"usage\":null}",
+    "{\"choices\":[{\"delta\":{\"content\":\"searched\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\",\"usage\":null}",
+    "{\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\",\"usage\":null}",
+    "{\"choices\":[],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\",\"usage\":{\"completion_tokens\":9,\"prompt_tokens\":17,\"prompt_tokens_details\":{\"cached_tokens\":3},\"total_tokens\":26}}"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "id": "resp_filter",
+      "incomplete_details": {
+        "reason": "content_filter"
+      },
+      "output": [],
+      "status": "incomplete"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "approximated",
+        "detail": "Chat cannot preserve this incomplete reason",
+        "path": "incomplete_details.reason",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "resp_filter",
+    "model": "gpt-test",
+    "object": "chat.completion"
+  }
+}

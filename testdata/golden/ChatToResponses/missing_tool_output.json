@@ -1,0 +1,97 @@
+{
+  "input": {
+    "kw": {
+      "max_tokens": 10,
+      "tool_choice": "required"
+    },
+    "messages": [
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"command\":\"ls\"}",
+              "name": "bash"
+            },
+            "id": "call_orphan",
+            "type": "function"
+          },
+          {
+            "function": {
+              "arguments": "{}",
+              "name": "bash"
+            },
+            "id": "call_done",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": [
+          {
+            "text": "ok",
+            "type": "text"
+          }
+        ],
+        "role": "tool",
+        "tool_call_id": "call_done"
+      },
+      {
+        "content": "next?",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": false
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "renamed",
+        "detail": "converted to max_output_tokens",
+        "path": "max_tokens",
+        "severity": "advisory"
+      },
+      {
+        "class": "approximated",
+        "detail": "missing tool output is synthesized as an empty string",
+        "path": "messages.0.tool_calls.0",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "input": [
+      {
+        "arguments": "{\"command\":\"ls\"}",
+        "call_id": "call_orphan",
+        "name": "bash",
+        "type": "function_call"
+      },
+      {
+        "arguments": "{}",
+        "call_id": "call_done",
+        "name": "bash",
+        "type": "function_call"
+      },
+      {
+        "call_id": "call_done",
+        "output": "ok",
+        "type": "function_call_output"
+      },
+      {
+        "content": "next?",
+        "role": "user"
+      },
+      {
+        "call_id": "call_orphan",
+        "output": "",
+        "type": "function_call_output"
+      }
+    ],
+    "max_output_tokens": 10,
+    "model": "gpt-test",
+    "tool_choice": "required"
+  }
+}

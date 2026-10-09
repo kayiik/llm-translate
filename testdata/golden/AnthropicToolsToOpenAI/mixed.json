@@ -1,0 +1,41 @@
+{
+  "input": [
+    {
+      "description": "find",
+      "input_schema": {
+        "type": "object"
+      },
+      "name": "search"
+    },
+    {
+      "name": "bare"
+    },
+    {
+      "description": "no name"
+    },
+    "not an object"
+  ],
+  "value": [
+    {
+      "function": {
+        "description": "find",
+        "name": "search",
+        "parameters": {
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "",
+        "name": "bare",
+        "parameters": {
+          "properties": {},
+          "type": "object"
+        }
+      },
+      "type": "function"
+    }
+  ]
+}

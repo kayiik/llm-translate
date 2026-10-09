@@ -1,0 +1,215 @@
+{
+  "incompatible": [
+    "messages.0.content.0.cache_control",
+    "messages.0.content.1.cache_control",
+    "messages.1.content.0",
+    "messages.1.content.1.cache_control",
+    "messages.2.content.0.cache_control",
+    "messages.2.content.0.content.0.cache_control",
+    "system.0.cache_control",
+    "tools.0.cache_control"
+  ],
+  "input": {
+    "max_tokens": 8,
+    "messages": [
+      {
+        "content": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "hi",
+            "type": "text"
+          },
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "source": {
+              "data": "AA==",
+              "media_type": "image/png",
+              "type": "base64"
+            },
+            "type": "image"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "data": "opaque",
+            "type": "redacted_thinking"
+          },
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "id": "toolu_v",
+            "input": {},
+            "name": "search",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "content": [
+              {
+                "cache_control": {
+                  "type": "ephemeral"
+                },
+                "text": "r",
+                "type": "text"
+              }
+            ],
+            "tool_use_id": "toolu_v",
+            "type": "tool_result"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "claude-test",
+    "system": [
+      {
+        "cache_control": {
+          "type": "ephemeral"
+        },
+        "text": "sys",
+        "type": "text"
+      }
+    ],
+    "tools": [
+      {
+        "cache_control": {
+          "type": "ephemeral"
+        },
+        "input_schema": {
+          "type": "object"
+        },
+        "name": "search"
+      }
+    ]
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.0.content.0.cache_control",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.0.content.1.cache_control",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.1.content.0",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning is not emitted by Chat",
+        "path": "messages.1.content.0.reasoning",
+        "severity": "advisory"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.1.content.1.cache_control",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.2.content.0.cache_control",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.2.content.0.content.0.cache_control",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "system.0.cache_control",
+        "severity": "material"
+      },
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "tools.0.cache_control",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": {
+      "max_tokens": 8,
+      "tools": [
+        {
+          "function": {
+            "description": "",
+            "name": "search",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          "type": "function"
+        }
+      ]
+    },
+    "Messages": [
+      {
+        "content": "sys",
+        "role": "system"
+      },
+      {
+        "content": [
+          {
+            "text": "hi",
+            "type": "text"
+          },
+          {
+            "image_url": {
+              "url": "data:image/png;base64,AA=="
+            },
+            "type": "image_url"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{}",
+              "name": "search"
+            },
+            "id": "toolu_v",
+            "type": "function"
+          }
+        ]
+      },
+      {
+        "content": "r",
+        "role": "tool",
+        "tool_call_id": "toolu_v"
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "id": "resp_cut",
+      "incomplete_details": {
+        "reason": "max_output_tokens"
+      },
+      "output": [
+        {
+          "content": [
+            {
+              "text": "partial",
+              "type": "output_text"
+            }
+          ],
+          "role": "assistant",
+          "type": "message"
+        }
+      ],
+      "status": "incomplete"
+    }
+  },
+  "report": {},
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "length",
+        "index": 0,
+        "message": {
+          "content": "partial",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "resp_cut",
+    "model": "gpt-test",
+    "object": "chat.completion"
+  }
+}

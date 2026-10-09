@@ -1,0 +1,73 @@
+{
+  "input": {
+    "model": "claude-test",
+    "response": {
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": null,
+            "reasoning_content": "thinking out loud",
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "function": {
+                  "arguments": "{}",
+                  "name": "lookup",
+                  "thought_signature": "sig-function"
+                },
+                "id": "call_1",
+                "thought_signature": "sig-call",
+                "type": "function"
+              }
+            ]
+          }
+        }
+      ],
+      "id": "chatcmpl-alt"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "reasoning_content is not representable by Anthropic Messages",
+        "path": "choices.0.message.reasoning_content",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by Anthropic Messages, so the next turn cannot replay it",
+        "path": "choices.0.message.tool_calls.0.function.thought_signature",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by Anthropic Messages, so the next turn cannot replay it",
+        "path": "choices.0.message.tool_calls.0.thought_signature",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "content": [
+      {
+        "id": "call_1",
+        "input": {},
+        "name": "lookup",
+        "type": "tool_use"
+      }
+    ],
+    "id": "chatcmpl-alt",
+    "model": "claude-test",
+    "role": "assistant",
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0
+    }
+  }
+}

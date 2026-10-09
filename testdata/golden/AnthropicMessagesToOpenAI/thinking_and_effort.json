@@ -1,0 +1,42 @@
+{
+  "input": {
+    "max_tokens": 64,
+    "messages": [
+      {
+        "content": "hi",
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "signature": "sig",
+            "thinking": "hmm",
+            "type": "thinking"
+          },
+          {
+            "text": "hello",
+            "type": "text"
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "model": "claude-test",
+    "output_config": {
+      "effort": "high"
+    },
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "value": [
+    {
+      "content": "hi",
+      "role": "user"
+    },
+    {
+      "content": "hello",
+      "role": "assistant"
+    }
+  ]
+}

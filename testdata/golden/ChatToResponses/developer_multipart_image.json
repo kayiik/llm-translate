@@ -1,0 +1,71 @@
+{
+  "input": {
+    "kw": {
+      "max_completion_tokens": 64
+    },
+    "messages": [
+      {
+        "content": [
+          {
+            "text": "policy A",
+            "type": "text"
+          },
+          {
+            "text": "policy B",
+            "type": "text"
+          }
+        ],
+        "role": "developer"
+      },
+      {
+        "content": [
+          {
+            "text": "what is this?",
+            "type": "text"
+          },
+          {
+            "image_url": {
+              "detail": "low",
+              "url": "data:image/png;base64,AA=="
+            },
+            "type": "image_url"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": true
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "renamed",
+        "detail": "converted to max_output_tokens",
+        "path": "max_completion_tokens",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "input": [
+      {
+        "content": [
+          {
+            "text": "what is this?",
+            "type": "input_text"
+          },
+          {
+            "image_url": "data:image/png;base64,AA==",
+            "type": "input_image"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "instructions": "policy Apolicy B",
+    "max_output_tokens": 64,
+    "model": "gpt-test",
+    "stream": true
+  }
+}

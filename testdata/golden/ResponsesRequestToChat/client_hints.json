@@ -1,0 +1,22 @@
+{
+  "input": {
+    "background": false,
+    "client_metadata": {
+      "client": "fixture"
+    },
+    "include": [],
+    "input": "hi",
+    "prompt_cache_key": "fixture-key",
+    "store": false
+  },
+  "report": {},
+  "value": {
+    "Keywords": {},
+    "Messages": [
+      {
+        "content": "hi",
+        "role": "user"
+      }
+    ]
+  }
+}

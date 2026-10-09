@@ -1,0 +1,38 @@
+{
+  "input": [
+    {
+      "type": "auto"
+    },
+    {
+      "type": "any"
+    },
+    {
+      "type": "none"
+    },
+    {
+      "name": "search",
+      "type": "tool"
+    },
+    {
+      "type": "tool"
+    },
+    {
+      "type": "other"
+    },
+    null
+  ],
+  "value": [
+    "auto",
+    "required",
+    "none",
+    {
+      "function": {
+        "name": "search"
+      },
+      "type": "function"
+    },
+    null,
+    null,
+    null
+  ]
+}

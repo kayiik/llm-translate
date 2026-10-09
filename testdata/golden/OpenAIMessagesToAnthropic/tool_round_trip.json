@@ -1,0 +1,106 @@
+{
+  "input": [
+    {
+      "content": "weather?",
+      "role": "user"
+    },
+    {
+      "content": "checking",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"city\":\"x\"}",
+            "name": "get_weather"
+          },
+          "id": "call_a",
+          "type": "function"
+        },
+        {
+          "function": {
+            "arguments": "",
+            "name": "get_time"
+          },
+          "id": "call_b",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "sunny",
+      "role": "tool",
+      "tool_call_id": "call_a"
+    },
+    {
+      "content": [
+        {
+          "text": "noon",
+          "type": "text"
+        }
+      ],
+      "role": "tool",
+      "tool_call_id": "call_b"
+    },
+    {
+      "content": "done",
+      "role": "assistant"
+    }
+  ],
+  "report": {},
+  "value": {
+    "Messages": [
+      {
+        "content": "weather?",
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "text": "checking",
+            "type": "text"
+          },
+          {
+            "id": "call_a",
+            "input": {
+              "city": "x"
+            },
+            "name": "get_weather",
+            "type": "tool_use"
+          },
+          {
+            "id": "call_b",
+            "input": {},
+            "name": "get_time",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "content": "sunny",
+            "tool_use_id": "call_a",
+            "type": "tool_result"
+          },
+          {
+            "content": "noon",
+            "tool_use_id": "call_b",
+            "type": "tool_result"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "text": "done",
+            "type": "text"
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "System": ""
+  }
+}

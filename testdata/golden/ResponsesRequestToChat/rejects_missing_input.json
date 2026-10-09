@@ -1,0 +1,20 @@
+{
+  "error": "Responses input is required",
+  "input": {
+    "model": "gpt-test"
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "Responses input is required",
+        "path": "$",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": null,
+    "Messages": null
+  }
+}

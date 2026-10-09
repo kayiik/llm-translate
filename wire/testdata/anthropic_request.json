@@ -1,0 +1,49 @@
+{
+  "model": "claude-test",
+  "max_tokens": 1024,
+  "temperature": 1.0,
+  "top_k": 40,
+  "stop_sequences": ["END"],
+  "stream": false,
+  "metadata": {"user_id": "u-fixture"},
+  "thinking": {"type": "enabled", "budget_tokens": 2048},
+  "x_top": {"beta": true},
+  "system": [
+    {"type": "text", "text": "cached policy", "cache_control": {"type": "ephemeral", "ttl": "1h"}},
+    {"type": "text", "text": "uncached tail", "x_sys": 0.10}
+  ],
+  "tools": [
+    {"name": "search", "description": "find", "input_schema": {"type": "object", "properties": {"q": {"type": "string"}}}, "cache_control": {"type": "ephemeral"}},
+    {"type": "web_search_20250305", "name": "web_search", "max_uses": 3}
+  ],
+  "tool_choice": {"type": "auto", "disable_parallel_tool_use": true},
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {"type": "text", "text": "describe", "cache_control": {"type": "ephemeral", "x_cc": "kept"}},
+        {"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": "AA=="}, "cache_control": {"type": "ephemeral"}},
+        {"type": "document", "source": {"type": "text", "media_type": "text/plain", "data": "doc"}, "citations": {"enabled": true}}
+      ],
+      "x_message": null
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {"type": "thinking", "thinking": "let me look", "signature": "sig-a"},
+        {"type": "redacted_thinking", "data": "opaque=="},
+        {"type": "text", "text": ""},
+        {"type": "tool_use", "id": "toolu_fixture", "name": "search", "input": {"q": "go", "limit": 1.50}, "x_block": [1]}
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {"type": "tool_result", "tool_use_id": "toolu_fixture", "is_error": false, "cache_control": {"type": "ephemeral"},
+         "content": [{"type": "text", "text": "result", "cache_control": {"type": "ephemeral"}}]},
+        {"type": "tool_result", "tool_use_id": "toolu_other", "content": "plain"}
+      ]
+    },
+    {"role": "assistant", "content": "string content"}
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "id": "resp_v",
+      "output": [
+        {
+          "id": "rs_1",
+          "summary": [],
+          "type": "reasoning"
+        },
+        {
+          "arguments": "{}",
+          "call_id": "call_1",
+          "name": "f",
+          "type": "function_call"
+        },
+        {
+          "encrypted_content": "opaque",
+          "id": "rs_2",
+          "type": "reasoning"
+        }
+      ]
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "Responses reasoning content is not emitted by Chat",
+        "path": "output.0",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning is not emitted by Chat",
+        "path": "output.0.reasoning",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "Responses reasoning content is not emitted by Chat",
+        "path": "output.2",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning is not emitted by Chat",
+        "path": "output.2.reasoning",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "content": null,
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{}",
+                "name": "f"
+              },
+              "id": "call_1",
+              "index": 0,
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "id": "resp_v",
+    "model": "gpt-test",
+    "object": "chat.completion"
+  }
+}

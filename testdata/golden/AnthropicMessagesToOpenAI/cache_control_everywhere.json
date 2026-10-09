@@ -1,0 +1,119 @@
+{
+  "input": {
+    "max_tokens": 8,
+    "messages": [
+      {
+        "content": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "hi",
+            "type": "text"
+          },
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "source": {
+              "data": "AA==",
+              "media_type": "image/png",
+              "type": "base64"
+            },
+            "type": "image"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "data": "opaque",
+            "type": "redacted_thinking"
+          },
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "id": "toolu_v",
+            "input": {},
+            "name": "search",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "content": [
+              {
+                "cache_control": {
+                  "type": "ephemeral"
+                },
+                "text": "r",
+                "type": "text"
+              }
+            ],
+            "tool_use_id": "toolu_v",
+            "type": "tool_result"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "claude-test",
+    "system": [
+      {
+        "cache_control": {
+          "type": "ephemeral"
+        },
+        "text": "sys",
+        "type": "text"
+      }
+    ],
+    "tools": [
+      {
+        "cache_control": {
+          "type": "ephemeral"
+        },
+        "input_schema": {
+          "type": "object"
+        },
+        "name": "search"
+      }
+    ]
+  },
+  "value": [
+    {
+      "content": "sys",
+      "role": "system"
+    },
+    {
+      "content": "hi",
+      "role": "user"
+    },
+    {
+      "content": null,
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{}",
+            "name": "search"
+          },
+          "id": "toolu_v",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "r",
+      "role": "tool",
+      "tool_call_id": "toolu_v"
+    }
+  ]
+}

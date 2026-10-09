@@ -1,0 +1,62 @@
+{
+  "input": {
+    "model": "claude-test",
+    "response": {
+      "content": [
+        {
+          "id": "srvtoolu_1",
+          "input": {},
+          "name": "web_search",
+          "type": "server_tool_use"
+        },
+        {
+          "id": "toolu_2",
+          "name": "noinput",
+          "type": "tool_use"
+        }
+      ],
+      "id": "msg_server",
+      "stop_reason": "pause_turn"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "Anthropic content block is not representable by Chat",
+        "path": "content.0",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": null,
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{}",
+                "name": "noinput"
+              },
+              "id": "toolu_2",
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "id": "msg_server",
+    "model": "claude-test",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    }
+  }
+}

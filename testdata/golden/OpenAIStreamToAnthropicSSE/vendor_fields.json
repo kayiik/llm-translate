@@ -1,0 +1,33 @@
+{
+  "input": [
+    "{\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"hmm\"}]},\"finish_reason\":null}]}",
+    "{\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"id\":\"call_1\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"\"},\"extra_content\":{\"google\":{\"thought_signature\":\"sig-thought\"}}}]},\"finish_reason\":null}]}",
+    "{\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"{}\"},\"extra_content\":{\"google\":{\"thought_signature\":\"sig-thought\"}}}]},\"finish_reason\":null}]}",
+    "{\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":3,\"completion_tokens\":2}}"
+  ],
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "reasoning_details are not representable by Anthropic Messages",
+        "path": "choices.0.delta.reasoning_details",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "Gemini thought signature is not representable by Anthropic Messages, so the next turn cannot replay it",
+        "path": "choices.0.delta.tool_calls.1.extra_content.google.thought_signature",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": [
+    "event: message_start\ndata: {\"message\":{\"content\":[],\"id\":\"msg_RANDOM\",\"model\":\"claude-test\",\"role\":\"assistant\",\"stop_reason\":null,\"stop_sequence\":null,\"type\":\"message\",\"usage\":{\"input_tokens\":0,\"output_tokens\":0}},\"type\":\"message_start\"}\n\n",
+    "event: ping\ndata: {\"type\":\"ping\"}\n\n",
+    "event: content_block_start\ndata: {\"content_block\":{\"id\":\"call_1\",\"input\":{},\"name\":\"lookup\",\"type\":\"tool_use\"},\"index\":0,\"type\":\"content_block_start\"}\n\n",
+    "event: content_block_delta\ndata: {\"delta\":{\"partial_json\":\"{}\",\"type\":\"input_json_delta\"},\"index\":0,\"type\":\"content_block_delta\"}\n\n",
+    "event: content_block_stop\ndata: {\"index\":0,\"type\":\"content_block_stop\"}\n\n",
+    "event: message_delta\ndata: {\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"type\":\"message_delta\",\"usage\":{\"output_tokens\":2}}\n\n",
+    "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n"
+  ]
+}

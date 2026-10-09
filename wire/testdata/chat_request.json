@@ -1,0 +1,66 @@
+{
+  "model": "gemini-test",
+  "vendor_top": {"routing": ["a", "b"], "weight": 0.50},
+  "temperature": 0.70,
+  "top_p": 1.0,
+  "max_tokens": 1e3,
+  "seed": 12345678901234567890,
+  "stop": "END",
+  "reasoning_effort": "low",
+  "parallel_tool_calls": false,
+  "metadata": {"trace": "t-1"},
+  "tool_choice": {"type": "function", "function": {"name": "lookup"}, "x_choice": 1},
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "lookup",
+        "description": "",
+        "parameters": {"type": "object", "properties": {"q": {"type": "string", "maxLength": 64}}},
+        "strict": true,
+        "x_fn": "kept"
+      },
+      "x_tool": null
+    }
+  ],
+  "messages": [
+    {
+      "role": "system",
+      "content": [
+        {"type": "text", "text": "long cached policy <&>", "cache_control": {"type": "ephemeral", "ttl": "1h", "x_cc": true}},
+        {"type": "text", "text": "tail", "x_part": {"nested": [1, 2.50]}}
+      ]
+    },
+    {
+      "role": "user",
+      "name": "",
+      "content": [
+        {"type": "text", "text": "look", "cache_control": {"type": "ephemeral"}},
+        {"type": "image_url", "image_url": {"url": "data:image/png;base64,AA==", "detail": "low", "x_img": 7}}
+      ],
+      "x_meta": {"client": "fixture"}
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "refusal": null,
+      "reasoning_details": [
+        {"type": "reasoning.text", "text": "thinking", "signature": "sig-r", "format": "vendor-v1", "index": 0},
+        {"type": "reasoning.encrypted", "data": "opaque==", "id": null}
+      ],
+      "tool_calls": [
+        {
+          "id": "call_1",
+          "type": "function",
+          "function": {"name": "lookup", "arguments": "{\"q\":\"go\"}", "x_args": false},
+          "extra_content": {"google": {"thought_signature": "sig-thought-1", "x_google": "g"}, "x_vendor": {"a": 1}},
+          "x_call": [null]
+        },
+        {"id": "call_2", "type": "function", "function": {"name": "lookup", "arguments": ""}}
+      ]
+    },
+    {"role": "tool", "tool_call_id": "call_1", "content": "result"},
+    {"role": "tool", "tool_call_id": "call_2", "content": ""},
+    {"role": "user", "content": "thanks"}
+  ]
+}

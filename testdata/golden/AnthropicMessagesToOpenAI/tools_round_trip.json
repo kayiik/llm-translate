@@ -1,0 +1,99 @@
+{
+  "input": {
+    "max_tokens": 32,
+    "messages": [
+      {
+        "content": "find go",
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "text": "searching",
+            "type": "text"
+          },
+          {
+            "id": "toolu_fixture",
+            "input": {
+              "q": "go"
+            },
+            "name": "search",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "result A",
+                "type": "text"
+              },
+              {
+                "text": "result B",
+                "type": "text"
+              }
+            ],
+            "tool_use_id": "toolu_fixture",
+            "type": "tool_result"
+          },
+          {
+            "text": "summarize",
+            "type": "text"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "claude-test",
+    "tool_choice": {
+      "name": "search",
+      "type": "tool"
+    },
+    "tools": [
+      {
+        "description": "find",
+        "input_schema": {
+          "properties": {
+            "q": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "name": "search"
+      }
+    ]
+  },
+  "value": [
+    {
+      "content": "find go",
+      "role": "user"
+    },
+    {
+      "content": "searching",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"q\":\"go\"}",
+            "name": "search"
+          },
+          "id": "toolu_fixture",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "result A\nresult B",
+      "role": "tool",
+      "tool_call_id": "toolu_fixture"
+    },
+    {
+      "content": "summarize",
+      "role": "user"
+    }
+  ]
+}

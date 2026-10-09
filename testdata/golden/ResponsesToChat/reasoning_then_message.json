@@ -1,0 +1,72 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "id": "resp_reason",
+      "output": [
+        {
+          "encrypted_content": "opaque",
+          "id": "rs_1",
+          "summary": [
+            {
+              "text": "thinking",
+              "type": "summary_text"
+            }
+          ],
+          "type": "reasoning"
+        },
+        {
+          "content": [
+            {
+              "text": "answer",
+              "type": "output_text"
+            }
+          ],
+          "role": "assistant",
+          "type": "message"
+        }
+      ],
+      "status": "completed",
+      "usage": {
+        "input_tokens": 4,
+        "output_tokens": 9
+      }
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "Responses reasoning content is not emitted by Chat",
+        "path": "output.0",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning is not emitted by Chat",
+        "path": "output.0.reasoning",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "answer",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "resp_reason",
+    "model": "gpt-test",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 9,
+      "prompt_tokens": 4,
+      "total_tokens": 13
+    }
+  }
+}

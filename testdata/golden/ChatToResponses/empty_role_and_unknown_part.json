@@ -1,0 +1,46 @@
+{
+  "input": {
+    "kw": {},
+    "messages": [
+      {
+        "content": "no role"
+      },
+      {
+        "content": [
+          {
+            "input_audio": {
+              "data": "AA==",
+              "format": "wav"
+            },
+            "type": "input_audio"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": false
+  },
+  "report": {},
+  "value": {
+    "input": [
+      {
+        "content": "no role",
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "input_audio": {
+              "data": "AA==",
+              "format": "wav"
+            },
+            "type": "input_audio"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test"
+  }
+}

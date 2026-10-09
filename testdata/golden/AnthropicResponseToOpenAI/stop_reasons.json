@@ -1,0 +1,39 @@
+{
+  "input": {
+    "model": "claude-test",
+    "response": {
+      "content": [
+        {
+          "text": "a",
+          "type": "text"
+        },
+        {
+          "text": "b",
+          "type": "text"
+        }
+      ],
+      "stop_reason": "max_tokens"
+    }
+  },
+  "report": {},
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "length",
+        "index": 0,
+        "message": {
+          "content": "ab",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "chatcmpl-RANDOM",
+    "model": "claude-test",
+    "object": "chat.completion",
+    "usage": {
+      "completion_tokens": 0,
+      "prompt_tokens": 0,
+      "total_tokens": 0
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "incompatible": [
+    "messages.1.content.0"
+  ],
+  "input": {
+    "max_tokens": 64,
+    "messages": [
+      {
+        "content": "hi",
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "signature": "sig",
+            "thinking": "hmm",
+            "type": "thinking"
+          },
+          {
+            "text": "hello",
+            "type": "text"
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "model": "claude-test",
+    "output_config": {
+      "effort": "high"
+    },
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.1.content.0",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
+        "detail": "reasoning is not emitted by Chat",
+        "path": "messages.1.content.0.reasoning",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": {
+      "max_tokens": 64,
+      "output_config": {
+        "effort": "high"
+      },
+      "reasoning_effort": "high",
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "Messages": [
+      {
+        "content": "hi",
+        "role": "user"
+      },
+      {
+        "content": "hello",
+        "role": "assistant",
+        "tool_calls": null
+      }
+    ]
+  }
+}

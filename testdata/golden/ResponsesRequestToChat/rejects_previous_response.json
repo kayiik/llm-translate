@@ -1,0 +1,21 @@
+{
+  "error": "previous_response_id requires a native Responses model",
+  "input": {
+    "input": "hi",
+    "previous_response_id": "resp_prev"
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "server-side response state is not representable by Chat",
+        "path": "previous_response_id",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": null,
+    "Messages": null
+  }
+}

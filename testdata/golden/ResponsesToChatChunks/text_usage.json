@@ -1,0 +1,44 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "id": "resp_fixture",
+      "object": "response",
+      "output": [
+        {
+          "content": [
+            {
+              "annotations": [],
+              "text": "Hi there!",
+              "type": "output_text"
+            }
+          ],
+          "id": "msg_fixture",
+          "role": "assistant",
+          "type": "message"
+        }
+      ],
+      "status": "completed",
+      "usage": {
+        "input_tokens": 10,
+        "output_tokens": 3,
+        "total_tokens": 13
+      }
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "approximated",
+        "detail": "buffered response is rendered as synthetic Chat chunks",
+        "path": "stream",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": [
+    "{\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"resp_fixture\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"content\":\"Hi there!\"},\"finish_reason\":null,\"index\":0}],\"id\":\"resp_fixture\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"id\":\"resp_fixture\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\",\"usage\":{\"completion_tokens\":3,\"prompt_tokens\":10,\"total_tokens\":13}}"
+  ]
+}

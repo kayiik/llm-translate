@@ -1,0 +1,90 @@
+{
+  "input": [
+    {
+      "content": "odd role",
+      "role": "critic"
+    },
+    {
+      "content": null,
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{not json",
+            "name": "broken"
+          },
+          "type": "function"
+        },
+        {
+          "function": {
+            "arguments": "[1,2]",
+            "name": "list"
+          },
+          "id": "call_arr",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "",
+      "role": "assistant"
+    }
+  ],
+  "report": {
+    "losses": [
+      {
+        "class": "approximated",
+        "detail": "role is converted to user",
+        "path": "messages.0.role",
+        "severity": "material"
+      },
+      {
+        "class": "approximated",
+        "detail": "invalid or non-object JSON arguments become an empty object",
+        "path": "messages.1.tool_calls.0.function.arguments",
+        "severity": "material"
+      },
+      {
+        "class": "approximated",
+        "detail": "invalid or non-object JSON arguments become an empty object",
+        "path": "messages.1.tool_calls.1.function.arguments",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Messages": [
+      {
+        "content": "odd role",
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "id": "toolu_RANDOM",
+            "input": {},
+            "name": "broken",
+            "type": "tool_use"
+          },
+          {
+            "id": "call_arr",
+            "input": {},
+            "name": "list",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "text": "",
+            "type": "text"
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "System": ""
+  }
+}

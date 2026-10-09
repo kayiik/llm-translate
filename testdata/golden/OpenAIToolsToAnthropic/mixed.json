@@ -1,0 +1,45 @@
+{
+  "input": [
+    {
+      "function": {
+        "description": "d",
+        "name": "lookup",
+        "parameters": {
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "name": "flat",
+      "parameters": {
+        "type": "object"
+      }
+    },
+    {
+      "function": {
+        "name": ""
+      },
+      "type": "function"
+    },
+    {
+      "type": "function"
+    }
+  ],
+  "value": [
+    {
+      "description": "d",
+      "input_schema": {
+        "type": "object"
+      },
+      "name": "lookup"
+    },
+    {
+      "description": "",
+      "input_schema": {
+        "type": "object"
+      },
+      "name": "flat"
+    }
+  ]
+}

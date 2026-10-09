@@ -1,0 +1,39 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "id": "resp_cut",
+      "incomplete_details": {
+        "reason": "max_output_tokens"
+      },
+      "output": [
+        {
+          "content": [
+            {
+              "text": "partial",
+              "type": "output_text"
+            }
+          ],
+          "role": "assistant",
+          "type": "message"
+        }
+      ],
+      "status": "incomplete"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "approximated",
+        "detail": "buffered response is rendered as synthetic Chat chunks",
+        "path": "stream",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": [
+    "{\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"resp_cut\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"content\":\"partial\"},\"finish_reason\":null,\"index\":0}],\"id\":\"resp_cut\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{},\"finish_reason\":\"length\",\"index\":0}],\"id\":\"resp_cut\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}"
+  ]
+}

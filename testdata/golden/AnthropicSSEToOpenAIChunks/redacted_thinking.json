@@ -1,0 +1,25 @@
+{
+  "input": [
+    "data: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_v\",\"content\":[]}}",
+    "data: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"redacted_thinking\",\"data\":\"opaque\"}}",
+    "data: {\"type\":\"content_block_stop\",\"index\":0}",
+    "data: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"text\",\"text\":\"\",\"cache_control\":{\"type\":\"ephemeral\"}}}",
+    "data: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"hi\"}}",
+    "data: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\"}}"
+  ],
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "reasoning is not emitted by Chat",
+        "path": "content.0.reasoning",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": [
+    "{\"choices\":[{\"delta\":{\"content\":\"\",\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{\"content\":\"hi\"},\"finish_reason\":null,\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}",
+    "{\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"id\":\"chatcmpl-RANDOM\",\"model\":\"gpt-test\",\"object\":\"chat.completion.chunk\"}"
+  ]
+}

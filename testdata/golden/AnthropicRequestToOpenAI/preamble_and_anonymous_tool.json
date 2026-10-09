@@ -1,0 +1,50 @@
+{
+  "incompatible": [
+    "messages.0.content.0"
+  ],
+  "input": {
+    "_llmgw_preamble": "gateway preamble",
+    "messages": [
+      {
+        "content": [
+          {
+            "input": {},
+            "name": "noid",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "model": "claude-test",
+    "system": "sys"
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "value is not representable by OpenAI Chat",
+        "path": "messages.0.content.0",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": {},
+    "Messages": [
+      {
+        "content": "gateway preamble",
+        "role": "system"
+      },
+      {
+        "content": "sys",
+        "role": "system"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": null
+      }
+    ]
+  }
+}

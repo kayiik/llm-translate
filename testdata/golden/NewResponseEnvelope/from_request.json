@@ -1,0 +1,64 @@
+{
+  "input": {
+    "id": "",
+    "model": "gpt-test",
+    "request": {
+      "instructions": "x",
+      "temperature": 1,
+      "text": {
+        "format": {
+          "type": "json_object"
+        }
+      },
+      "tools": [
+        {
+          "name": "f",
+          "type": "function"
+        }
+      ],
+      "user": "u"
+    },
+    "status": "completed"
+  },
+  "value": {
+    "background": false,
+    "created_at": "NORMALIZED",
+    "error": null,
+    "id": "resp_RANDOM",
+    "incomplete_details": null,
+    "instructions": "x",
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "metadata": {},
+    "model": "gpt-test",
+    "object": "response",
+    "output": [],
+    "parallel_tool_calls": true,
+    "previous_response_id": null,
+    "reasoning": {
+      "effort": null,
+      "summary": null
+    },
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_object"
+      }
+    },
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "name": "f",
+        "type": "function"
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": null,
+    "truncation": "disabled",
+    "usage": null,
+    "user": "u"
+  }
+}

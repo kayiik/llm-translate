@@ -1,0 +1,36 @@
+{
+  "input": {
+    "input": "hello",
+    "instructions": "be terse",
+    "max_output_tokens": 64,
+    "model": "gpt-test",
+    "reasoning": {
+      "effort": "medium"
+    },
+    "stream": true,
+    "temperature": 0.3,
+    "top_p": 1
+  },
+  "report": {},
+  "value": {
+    "Keywords": {
+      "_max_output_tokens": 64,
+      "reasoning_effort": "medium",
+      "stream_options": {
+        "include_usage": true
+      },
+      "temperature": 0.3,
+      "top_p": 1
+    },
+    "Messages": [
+      {
+        "content": "be terse",
+        "role": "system"
+      },
+      {
+        "content": "hello",
+        "role": "user"
+      }
+    ]
+  }
+}

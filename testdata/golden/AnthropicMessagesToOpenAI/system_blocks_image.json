@@ -1,0 +1,45 @@
+{
+  "input": {
+    "max_tokens": 16,
+    "messages": [
+      {
+        "content": [
+          {
+            "text": "describe",
+            "type": "text"
+          },
+          {
+            "source": {
+              "data": "AA==",
+              "media_type": "image/png",
+              "type": "base64"
+            },
+            "type": "image"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "model": "claude-test",
+    "system": [
+      {
+        "text": "rule one",
+        "type": "text"
+      },
+      {
+        "text": "rule two",
+        "type": "text"
+      }
+    ]
+  },
+  "value": [
+    {
+      "content": "rule one\n\nrule two",
+      "role": "system"
+    },
+    {
+      "content": "describe",
+      "role": "user"
+    }
+  ]
+}

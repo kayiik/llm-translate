@@ -1,0 +1,101 @@
+{
+  "input": {
+    "chat": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "ok",
+            "role": "assistant"
+          }
+        }
+      ],
+      "id": "chatcmpl-fixture6",
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 2,
+        "total_tokens": 3
+      }
+    },
+    "model": "gpt-test",
+    "request": {
+      "instructions": "be brief",
+      "max_output_tokens": 8,
+      "metadata": {
+        "k": "v"
+      },
+      "parallel_tool_calls": false,
+      "reasoning": {
+        "effort": "low"
+      },
+      "store": false,
+      "temperature": 0.2,
+      "tool_choice": "auto",
+      "tools": []
+    }
+  },
+  "report": {},
+  "value": {
+    "background": false,
+    "created_at": "NORMALIZED",
+    "error": null,
+    "id": "resp_fixture6",
+    "incomplete_details": null,
+    "instructions": "be brief",
+    "max_output_tokens": 8,
+    "max_tool_calls": null,
+    "metadata": {
+      "k": "v"
+    },
+    "model": "gpt-test",
+    "object": "response",
+    "output": [
+      {
+        "content": [
+          {
+            "annotations": [],
+            "text": "ok",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_fixture6",
+        "role": "assistant",
+        "status": "completed",
+        "type": "message"
+      }
+    ],
+    "output_text": "ok",
+    "parallel_tool_calls": false,
+    "previous_response_id": null,
+    "reasoning": {
+      "effort": "low"
+    },
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 0.2,
+    "text": {
+      "format": {
+        "type": "text"
+      }
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": null,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 2,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 1,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 3
+    },
+    "user": null
+  }
+}

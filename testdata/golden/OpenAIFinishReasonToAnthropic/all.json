@@ -1,0 +1,20 @@
+{
+  "input": [
+    "stop",
+    "length",
+    "tool_calls",
+    "function_call",
+    "content_filter",
+    "other",
+    null
+  ],
+  "value": [
+    "end_turn",
+    "max_tokens",
+    "tool_use",
+    "tool_use",
+    "end_turn",
+    "end_turn",
+    "end_turn"
+  ]
+}

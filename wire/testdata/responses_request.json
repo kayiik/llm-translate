@@ -1,0 +1,47 @@
+{
+  "model": "gpt-test",
+  "instructions": "",
+  "stream": true,
+  "store": false,
+  "max_output_tokens": 2048,
+  "temperature": 0.20,
+  "top_p": 1,
+  "parallel_tool_calls": true,
+  "prompt_cache_key": "key-fixture",
+  "truncation": "auto",
+  "include": ["reasoning.encrypted_content"],
+  "text": {"format": {"type": "text"}, "verbosity": "low"},
+  "metadata": {"trace": "t-2"},
+  "reasoning": {"effort": "high", "summary": "auto", "x_reason": 1},
+  "x_top": [true, null],
+  "tool_choice": {"type": "function", "name": "lookup"},
+  "tools": [
+    {"type": "function", "name": "lookup", "description": "find", "parameters": {"type": "object"}, "strict": false},
+    {"type": "web_search", "search_context_size": "low"}
+  ],
+  "input": [
+    {
+      "type": "message",
+      "role": "user",
+      "content": [
+        {"type": "input_text", "text": "cached context", "cache_control": {"type": "ephemeral"}},
+        {"type": "input_image", "image_url": "data:image/png;base64,AA==", "detail": "high"},
+        {"type": "input_file", "file_id": "file-fixture", "x_part": 2.0}
+      ]
+    },
+    {"type": "reasoning", "id": "rs_1", "summary": [{"type": "summary_text", "text": "planned"}], "encrypted_content": "opaque==", "content": null},
+    {
+      "type": "function_call",
+      "id": "fc_1",
+      "call_id": "call_1",
+      "name": "lookup",
+      "arguments": "{\"q\":\"go\"}",
+      "status": "completed",
+      "extra_content": {"google": {"thought_signature": "sig-thought-4"}}
+    },
+    {"type": "function_call_output", "call_id": "call_1", "output": [{"type": "input_text", "text": "result"}]},
+    {"type": "function_call_output", "call_id": "call_0", "output": ""},
+    {"role": "assistant", "content": "earlier answer", "reasoning_details": [{"type": "reasoning.text", "text": "x"}]},
+    {"type": "item_reference", "id": "msg_ref"}
+  ]
+}

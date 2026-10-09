@@ -1,0 +1,24 @@
+{
+  "input": {
+    "model": "gpt-test",
+    "response": {
+      "output_text": "from convenience field"
+    }
+  },
+  "report": {},
+  "value": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "from convenience field",
+          "role": "assistant"
+        }
+      }
+    ],
+    "id": "chatcmpl-RANDOM",
+    "model": "gpt-test",
+    "object": "chat.completion"
+  }
+}

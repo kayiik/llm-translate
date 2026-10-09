@@ -1,0 +1,201 @@
+{
+  "input": [
+    {
+      "content": "first system",
+      "role": "system"
+    },
+    {
+      "content": [
+        {
+          "text": "a",
+          "type": "text"
+        },
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "text": "b",
+          "type": "text"
+        },
+        {
+          "text": "c",
+          "type": "text"
+        }
+      ],
+      "role": "developer"
+    },
+    {
+      "content": [
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "text": "",
+          "type": "text"
+        }
+      ],
+      "role": "system"
+    },
+    {
+      "content": [
+        {
+          "text": "one",
+          "type": "text"
+        },
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "text": "two",
+          "type": "text"
+        },
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "text": "three",
+          "type": "text"
+        },
+        {
+          "text": "four",
+          "type": "text"
+        }
+      ],
+      "role": "user"
+    },
+    {
+      "content": [
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "text": "answer",
+          "type": "text"
+        }
+      ],
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{}",
+            "name": "f"
+          },
+          "id": "call_x",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "plain result",
+      "role": "tool",
+      "tool_call_id": "call_x"
+    },
+    {
+      "content": [
+        {
+          "cache_control": {
+            "type": "ephemeral"
+          },
+          "text": "not a Chat text part",
+          "type": "input_text"
+        }
+      ],
+      "role": "user"
+    }
+  ],
+  "report": {
+    "losses": [
+      {
+        "class": "approximated",
+        "detail": "developer instruction is merged into Anthropic system text",
+        "path": "messages.1.role",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "cache_control is not representable by Anthropic Messages",
+        "path": "messages.2.content.0.cache_control",
+        "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "cache_control is not representable by Anthropic Messages",
+        "path": "messages.6.content.0.cache_control",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "Messages": [
+      {
+        "content": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "one\ntwo",
+            "type": "text"
+          },
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "three",
+            "type": "text"
+          },
+          {
+            "text": "four",
+            "type": "text"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "answer",
+            "type": "text"
+          },
+          {
+            "id": "call_x",
+            "input": {},
+            "name": "f",
+            "type": "tool_use"
+          }
+        ],
+        "role": "assistant"
+      },
+      {
+        "content": [
+          {
+            "content": "plain result",
+            "tool_use_id": "call_x",
+            "type": "tool_result"
+          }
+        ],
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "user"
+      }
+    ],
+    "System": "first system\n\na\nb\nc",
+    "SystemBlocks": [
+      {
+        "cache_control": {
+          "type": "ephemeral"
+        },
+        "text": "first system\n\na\nb",
+        "type": "text"
+      },
+      {
+        "text": "c",
+        "type": "text"
+      }
+    ]
+  }
+}
