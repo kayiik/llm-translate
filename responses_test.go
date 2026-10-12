@@ -200,3 +200,32 @@ func TestPreferredEndpoint(t *testing.T) {
 		}
 	}
 }
+
+// A response_format survives a conversion to Responses and back unchanged,
+// so a request for structured output asks every API for the same structure.
+func TestResponseFormatRoundTripsThroughTextFormat(t *testing.T) {
+	for _, raw := range []string{
+		`{"type":"json_object"}`,
+		`{"type":"json_schema","json_schema":{"name":"verdict","schema":{"type":"object","properties":{"ok":{"type":"boolean"}}},"strict":true}}`,
+		`{"type":"json_schema","json_schema":{"name":"verdict","description":"the verdict","schema":{"type":"object"}}}`,
+	} {
+		var format map[string]any
+		if err := json.Unmarshal([]byte(raw), &format); err != nil {
+			t.Fatal(err)
+		}
+		messages := []map[string]any{{"role": "user", "content": "verdict?"}}
+		converted := ChatToResponses("gpt-test", messages, map[string]any{"response_format": format}, false)
+		if converted["text"] == nil {
+			t.Fatalf("%s: no text.format in %v", raw, converted)
+		}
+		_, kw, err := ResponsesRequestToChat(map[string]any{"input": "verdict?", "text": converted["text"]})
+		if err != nil {
+			t.Fatalf("%s: %v", raw, err)
+		}
+		back, _ := json.Marshal(kw["response_format"])
+		want, _ := json.Marshal(format)
+		if string(back) != string(want) {
+			t.Fatalf("round trip = %s, want %s", back, want)
+		}
+	}
+}

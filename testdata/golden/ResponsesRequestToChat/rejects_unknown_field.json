@@ -1,19 +1,15 @@
 {
-  "error": "Responses field \"text\" requires a native Responses model",
+  "error": "Responses field \"truncation\" requires a native Responses model",
   "input": {
     "input": "hi",
-    "text": {
-      "format": {
-        "type": "json_schema"
-      }
-    }
+    "truncation": "auto"
   },
   "report": {
     "losses": [
       {
         "class": "unsupported",
         "detail": "Responses field requires a native Responses model",
-        "path": "text",
+        "path": "truncation",
         "severity": "material"
       }
     ]

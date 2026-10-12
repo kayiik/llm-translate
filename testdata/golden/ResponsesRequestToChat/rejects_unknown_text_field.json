@@ -1,0 +1,26 @@
+{
+  "error": "Responses text field \"verbosity\" requires a native Responses model",
+  "input": {
+    "input": "hi",
+    "text": {
+      "format": {
+        "type": "json_object"
+      },
+      "verbosity": "low"
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "Responses text field \"verbosity\" requires a native Responses model",
+        "path": "$",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": null,
+    "Messages": null
+  }
+}

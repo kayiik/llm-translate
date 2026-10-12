@@ -133,9 +133,20 @@ func ChatToResponsesWithReport(model string, messages []map[string]any, kw map[s
 	}
 	supported := map[string]bool{"max_completion_tokens": true, "max_tokens": true, "reasoning_effort": true, "temperature": true, "top_p": true, "tools": true, "tool_choice": true, "metadata": true}
 	for key, value := range kw {
-		if value != nil && !supported[key] {
-			losses = append(losses, material(key, LossDropped, "Chat option is not emitted in the Responses request"))
+		if value == nil || supported[key] {
+			continue
 		}
+		if key == "response_format" {
+			if _, needed, ok := responsesTextFormat(value); ok {
+				if needed {
+					losses = append(losses, advisory(key, LossRenamed, "converted to text.format"))
+				}
+				continue
+			}
+			losses = append(losses, material(key, LossDropped, "this response_format has no Responses text.format"))
+			continue
+		}
+		losses = append(losses, material(key, LossDropped, "Chat option is not emitted in the Responses request"))
 	}
 	outputs := map[string]bool{}
 	for _, message := range messages {
@@ -191,7 +202,7 @@ func responsesDroppedCacheControl(prefix string, message map[string]any) []Loss 
 // ResponsesRequestToChatWithReport preserves existing validation errors and
 // reports unsupported top-level fields as material compatibility loss.
 func ResponsesRequestToChatWithReport(payload map[string]any) (ConversionResult[OpenAIChatRequest], error) {
-	known := map[string]bool{"model": true, "input": true, "instructions": true, "stream": true, "max_output_tokens": true, "reasoning": true, "temperature": true, "top_p": true, "tools": true, "tool_choice": true, "metadata": true, "store": true, "background": true, "force_api_support": true, "previous_response_id": true, "conversation": true, "client_metadata": true, "include": true, "parallel_tool_calls": true, "prompt_cache_key": true}
+	known := map[string]bool{"model": true, "input": true, "instructions": true, "stream": true, "max_output_tokens": true, "reasoning": true, "temperature": true, "top_p": true, "tools": true, "tool_choice": true, "metadata": true, "store": true, "background": true, "force_api_support": true, "previous_response_id": true, "conversation": true, "client_metadata": true, "include": true, "parallel_tool_calls": true, "prompt_cache_key": true, "text": true}
 	var losses []Loss
 	for key, value := range payload {
 		if value != nil && !known[key] {
@@ -210,6 +221,9 @@ func ResponsesRequestToChatWithReport(payload map[string]any) (ConversionResult[
 	messages, keywords, err := ResponsesRequestToChat(payload)
 	if err != nil && len(losses) == 0 {
 		losses = append(losses, material("$", LossUnsupported, err.Error()))
+	}
+	if err == nil && keywords["response_format"] != nil {
+		losses = append(losses, advisory("text.format", LossRenamed, "converted to response_format"))
 	}
 	return ConversionResult[OpenAIChatRequest]{Value: OpenAIChatRequest{Messages: messages, Keywords: keywords}, Report: NewReport(losses...)}, err
 }
