@@ -131,6 +131,17 @@ The system prompt is returned as a string, so only
 `system` value instead of `System`. `cache_control` on a part the conversion
 drops, such as an image, is reported as `advisory`.
 
+### Structured output between Chat and Responses
+
+A Chat `response_format` and a Responses `text.format` ask for the same
+structure, so `ChatToResponses` carries one as the other and
+`ResponsesRequestToChat` carries it back. A `json_schema` format's `name`,
+`description`, `schema` and `strict` sit in its `json_schema` object in Chat
+and directly in the format in Responses. A format of type `text` asks for the
+default and is not emitted. The rename is reported as `advisory`. A format
+with a member neither API defines is reported as `material`, and so is a
+Responses `text` member other than `format`, such as `verbosity`.
+
 ## Package wire
 
 `github.com/kayiik/llm-translate/wire` holds typed request, response and

@@ -157,8 +157,8 @@ func TestV043AnthropicPreservesDeveloperAsSystem(t *testing.T) {
 
 func TestV043ResponsesFallbackRejectsLossyFeatures(t *testing.T) {
 	for name, payload := range map[string]map[string]any{
-		"structured output": {
-			"input": "hello", "text": map[string]any{"format": map[string]any{"type": "json_schema"}},
+		"text verbosity": {
+			"input": "hello", "text": map[string]any{"verbosity": "low"},
 		},
 		"structured instructions": {
 			"input": "hello",

@@ -29,10 +29,10 @@
         "severity": "material"
       },
       {
-        "class": "dropped",
-        "detail": "Chat option is not emitted in the Responses request",
+        "class": "renamed",
+        "detail": "converted to text.format",
         "path": "response_format",
-        "severity": "material"
+        "severity": "advisory"
       },
       {
         "class": "dropped",
@@ -55,6 +55,11 @@
         "role": "user"
       }
     ],
-    "model": "gpt-test"
+    "model": "gpt-test",
+    "text": {
+      "format": {
+        "type": "json_object"
+      }
+    }
   }
 }

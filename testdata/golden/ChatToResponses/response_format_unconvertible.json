@@ -1,0 +1,43 @@
+{
+  "input": {
+    "kw": {
+      "response_format": {
+        "json_schema": {
+          "examples": [],
+          "name": "verdict",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "type": "json_schema"
+      }
+    },
+    "messages": [
+      {
+        "content": "hi",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": false
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "this response_format has no Responses text.format",
+        "path": "response_format",
+        "severity": "material"
+      }
+    ]
+  },
+  "value": {
+    "input": [
+      {
+        "content": "hi",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test"
+  }
+}

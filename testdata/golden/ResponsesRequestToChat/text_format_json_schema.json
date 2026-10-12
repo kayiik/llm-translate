@@ -1,0 +1,63 @@
+{
+  "input": {
+    "input": "verdict?",
+    "text": {
+      "format": {
+        "description": "the verdict",
+        "name": "verdict",
+        "schema": {
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ok"
+          ],
+          "type": "object"
+        },
+        "strict": true,
+        "type": "json_schema"
+      }
+    }
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "renamed",
+        "detail": "converted to response_format",
+        "path": "text.format",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "Keywords": {
+      "response_format": {
+        "json_schema": {
+          "description": "the verdict",
+          "name": "verdict",
+          "schema": {
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "ok"
+            ],
+            "type": "object"
+          },
+          "strict": true
+        },
+        "type": "json_schema"
+      }
+    },
+    "Messages": [
+      {
+        "content": "verdict?",
+        "role": "user"
+      }
+    ]
+  }
+}

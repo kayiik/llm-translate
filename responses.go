@@ -117,6 +117,9 @@ func ChatToResponses(model string, messages []map[string]any, kw map[string]any,
 	if metadata := kw["metadata"]; metadata != nil {
 		payload["metadata"] = metadata
 	}
+	if format, needed, ok := responsesTextFormat(kw["response_format"]); ok && needed {
+		payload["text"] = map[string]any{"format": format}
+	}
 	if stream {
 		payload["stream"] = true
 	}
@@ -125,7 +128,8 @@ func ChatToResponses(model string, messages []map[string]any, kw map[string]any,
 
 // ResponsesRequestToChat converts supported Responses input/history/tools into
 // the gateway's internal Chat representation. Built-in Responses-only tools
-// fail explicitly instead of being silently flattened.
+// fail explicitly instead of being silently flattened. A text.format becomes
+// the response_format that asks Chat for the same structure.
 func ResponsesRequestToChat(
 	payload map[string]any,
 ) ([]map[string]any, map[string]any, error) {
@@ -136,7 +140,7 @@ func ResponsesRequestToChat(
 		"metadata": true, "store": true, "background": true,
 		"force_api_support": true, "previous_response_id": true, "conversation": true,
 		"client_metadata": true, "include": true, "parallel_tool_calls": true,
-		"prompt_cache_key": true,
+		"prompt_cache_key": true, "text": true,
 	}
 	for key, value := range payload {
 		if !allowed[key] && value != nil {
@@ -348,6 +352,15 @@ func ResponsesRequestToChat(
 			}
 		} else {
 			kw["tool_choice"] = choice
+		}
+	}
+	if text := payload["text"]; text != nil {
+		format, err := chatResponseFormat(text)
+		if err != nil {
+			return nil, nil, err
+		}
+		if format != nil {
+			kw["response_format"] = format
 		}
 	}
 	if payload["stream"] == true {

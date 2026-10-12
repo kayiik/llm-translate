@@ -1,0 +1,20 @@
+{
+  "input": {
+    "input": "hi",
+    "text": {
+      "format": {
+        "type": "text"
+      }
+    }
+  },
+  "report": {},
+  "value": {
+    "Keywords": {},
+    "Messages": [
+      {
+        "content": "hi",
+        "role": "user"
+      }
+    ]
+  }
+}

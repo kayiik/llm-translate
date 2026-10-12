@@ -8,13 +8,13 @@ import (
 
 func TestResponsesRequestReportUnsupportedMaterialField(t *testing.T) {
 	result, err := ResponsesRequestToChatWithReport(map[string]any{
-		"input": "hello",
-		"text":  map[string]any{"format": map[string]any{"type": "json_schema"}},
+		"input":      "hello",
+		"truncation": "auto",
 	})
 	if err == nil {
 		t.Fatal("expected existing converter to reject unsupported field")
 	}
-	want := []Loss{{Path: "text", Class: LossUnsupported, Severity: LossMaterial, Detail: "Responses field requires a native Responses model"}}
+	want := []Loss{{Path: "truncation", Class: LossUnsupported, Severity: LossMaterial, Detail: "Responses field requires a native Responses model"}}
 	if !reflect.DeepEqual(result.Report.Losses, want) {
 		t.Fatalf("losses = %#v, want %#v", result.Report.Losses, want)
 	}

@@ -1,0 +1,71 @@
+{
+  "input": {
+    "kw": {
+      "response_format": {
+        "json_schema": {
+          "description": "the verdict",
+          "name": "verdict",
+          "schema": {
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "ok"
+            ],
+            "type": "object"
+          },
+          "strict": true
+        },
+        "type": "json_schema"
+      }
+    },
+    "messages": [
+      {
+        "content": "verdict?",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": false
+  },
+  "report": {
+    "losses": [
+      {
+        "class": "renamed",
+        "detail": "converted to text.format",
+        "path": "response_format",
+        "severity": "advisory"
+      }
+    ]
+  },
+  "value": {
+    "input": [
+      {
+        "content": "verdict?",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "text": {
+      "format": {
+        "description": "the verdict",
+        "name": "verdict",
+        "schema": {
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ok"
+          ],
+          "type": "object"
+        },
+        "strict": true,
+        "type": "json_schema"
+      }
+    }
+  }
+}

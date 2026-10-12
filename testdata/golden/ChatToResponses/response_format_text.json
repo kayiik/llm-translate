@@ -1,0 +1,27 @@
+{
+  "input": {
+    "kw": {
+      "response_format": {
+        "type": "text"
+      }
+    },
+    "messages": [
+      {
+        "content": "hi",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test",
+    "stream": false
+  },
+  "report": {},
+  "value": {
+    "input": [
+      {
+        "content": "hi",
+        "role": "user"
+      }
+    ],
+    "model": "gpt-test"
+  }
+}
