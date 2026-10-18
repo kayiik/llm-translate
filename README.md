@@ -142,6 +142,106 @@ default and is not emitted. The rename is reported as `advisory`. A format
 with a member neither API defines is reported as `material`, and so is a
 Responses `text` member other than `format`, such as `verbosity`.
 
+The adapting assessment checks the finite format/function envelopes: required
+format name and object schema, typed description/strict controls, and precise
+unknown member paths. Schema contents themselves remain verbatim JSON data,
+including refs and custom vocabulary; this does not certify a target model's
+schema support. Empty object schemas and explicit `strict:false` are retained.
+
+Function strict defaults differ: Chat→Responses makes Chat's omitted/null
+non-strict default explicit as `strict:false`. Missing Chat parameters use the
+required nullable Responses field; explicit native Responses null parameters
+omit optional Chat parameters on return. A supplied Chat parameter schema must
+be an object. Responses' omitted/null function strict policy cannot be ported
+to Chat's default without guessing; `AssessConversion` marks its exact path
+unknown until true/false is supplied or a native Responses target is used.
+Legacy value-producing APIs remain available; admission must inspect the
+assessment's feasibility and unknown paths, not merely a nonempty result.
+
+Chat/Responses conversion retains image `detail` and responses containing both
+text and function calls, including when rendering buffered Chat chunks. Content
+parts a conversion cannot represent are reported at their source paths. A
+foreign user part passed through unchanged is still reported as unsupported;
+passthrough alone does not establish that the target accepts its type.
+
+Usage conversion between Chat and Responses retains supplied `cached_tokens`,
+`cache_write_tokens` and `reasoning_tokens` detail counters. Responses→Chat omits
+missing/null optional counters and retains explicitly reported zero.
+Chat→Responses preserves the legacy required detail objects and cached/reasoning
+fields, using synthetic zero placeholders when absent from the source. Those
+placeholders are wire compatibility values, not provider-reported measurements;
+source-presence observations use the source-side APIs below. Cache-write detail
+is carried when supplied. Valid-source aggregate aliases and the legacy
+absent/zero-total fallback are preserved.
+
+Chat→Responses aggregate usage accepts exact `json.Number` integers without
+floating-point conversion, including int64-sized values. Invalid supplied
+aggregate counts or an overflowing derived total leave target usage unknown
+(`null`); WithReport identifies the material source path instead of fabricating
+measured zeros. Legacy valid-value aliases, fallback and required placeholders
+remain separate from source observation provenance.
+
+## Fidelity and source observations
+
+`AssessConversion` is an additive assessment of the four named request edges.
+Pass the full **source** payload, `PhaseRequest` or `PhaseResponse`, and explicit
+`FidelityRequirements`. The conversion ID always names the originating request
+direction: `ConversionChatToResponses` with `PhaseResponse` assesses a Responses
+answer converted back to Chat. The result distinguishes evaluated features,
+known losses, and `UnknownPaths`; a loss-free legacy helper alone is not proof
+of complete fidelity. Model/endpoint capabilities and admission remain the
+caller's responsibility. Native passthrough does not need a conversion and
+keeps its unknown fields.
+
+Opaque encrypted/signed continuation state infers replay requirements even with
+an empty visible summary. Display-only reasoning retains advisory semantics.
+Unknown nested controls cannot become supported merely because their enclosing
+message/tool is supported. Schema envelopes that are carried unchanged do not
+establish target-model schema-vocabulary support.
+
+`ObserveUsage` extracts a native usage object **before** conversion placeholders.
+`CountObservation` distinguishes absent, invalid, measured zero, reported and
+derived values. `ObserveUsageWithSource(..., UsageSynthetic)` labels observations
+when only a synthesized target object is available. OpenAI cache/read/write and
+reasoning are subsets of inclusive totals; Anthropic input categories are
+disjoint and TTL children partition writes. Incomplete source categories remain
+unknown rather than being filled with measured zeros. `UsageAccumulator` merges
+cumulative updates by replacement, retaining omitted counters independently of
+bounded raw evidence (up to 32 members, 4 KiB per member, 16 KiB content total).
+
+`ObserveUsageWithDetails` / `ObserveUsageWithSourceAndDetails` return a
+`UsageObservationWithDetails` wrapper, preserving the existing observation and
+integer-usage layouts. Its `Details` adds Chat prompt/completion audio and
+accepted/rejected prediction tokens, plus Messages server web-search/web-fetch
+request counts where reported. `UsageAccumulator.SnapshotWithDetails` retains
+these counters independently of truncated raw evidence. Audio/prediction values
+are subsets of inclusive totals, not additions; web requests are operation
+counts, not tokens. Fetch is documented by the selected pinned beta schema,
+not a guarantee for every stable deployment/model. No unsupported Responses
+counter counterparts, wire detail fields, prices or cost estimates are invented.
+
+`AnthropicSSEToOpenAIChunksObserved` and `OpenAIStreamToAnthropicSSEObserved` combine
+event-time assessments, source usage and terminal quality without buffering a
+whole stream. The observer runs before affected source events are converted and
+at finalization. The Chat input iterator must include `[DONE]`; missing terminal
+evidence is truncation, not success. Requested final Chat usage is emitted only
+when inclusive source totals can be determined. The legacy stream functions keep
+their existing behavior. Caller transport framing, cancellation, delivery state
+and no-replay-after-output enforcement remain outside these pure converters.
+
+`OpenAIStreamToResponsesSSEObserved` incrementally renders Chat JSON chunks plus
+`[DONE]` as typed Responses SSE records, including text, refusal and interleaved
+client function calls. Its request argument supplies only supported response
+envelope fields; generated response/item IDs do not create stored lineage.
+`ResponsesSSEToOpenAIChunksObserved` accepts native Responses JSON event data and
+emits Chat JSON chunks; its caller adds `[DONE]` only after a successful terminal
+result and delivery checks. Required state, hosted tools, citations and unassessed
+semantics are reported before affected output and stop these bridges. Source
+usage remains distinct from required wire placeholders, and terminal snapshots
+do not duplicate already emitted deltas. Both emit during source consumption;
+per-item text/arguments are assembled for done/terminal objects, without buffering
+the source generation before delivery. Existing buffered helpers remain unchanged.
+
 ## Package wire
 
 `github.com/kayiik/llm-translate/wire` holds typed request, response and

@@ -119,6 +119,12 @@
       },
       {
         "class": "dropped",
+        "detail": "content part is not representable by Anthropic Messages",
+        "path": "messages.6.content.0",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
         "detail": "cache_control is not representable by Anthropic Messages",
         "path": "messages.6.content.0.cache_control",
         "severity": "advisory"

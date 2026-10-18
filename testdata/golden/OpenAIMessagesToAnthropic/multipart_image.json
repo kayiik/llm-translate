@@ -33,7 +33,16 @@
       "role": "assistant"
     }
   ],
-  "report": {},
+  "report": {
+    "losses": [
+      {
+        "class": "dropped",
+        "detail": "content part is not representable by Anthropic Messages",
+        "path": "messages.0.content.1",
+        "severity": "material"
+      }
+    ]
+  },
   "value": {
     "Messages": [
       {

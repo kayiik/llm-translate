@@ -1,11 +1,12 @@
 package translate
 
-import "fmt"
-
 // A Chat request asks for structured output in response_format, and a
 // Responses request in text.format. The formats are the same, except that a
 // json_schema format's name, description, schema and strict sit in a
 // json_schema object in Chat and directly in the format in Responses.
+// These value helpers retain legacy restructuring behavior. Required/typed
+// envelope controls are checked by structured_output.go for WithReport and
+// assessed admission; schema contents are never rewritten or validated here.
 
 // responsesTextFormat returns the Responses text.format that carries a Chat
 // response_format, and whether the request needs one: a format of type text
@@ -46,11 +47,11 @@ func responsesTextFormat(value any) (format map[string]any, needed, ok bool) {
 func chatResponseFormat(value any) (map[string]any, error) {
 	text, ok := asMap(value)
 	if !ok {
-		return nil, fmt.Errorf("Responses text must be an object")
+		return nil, protocolErrorf("Responses", "text must be an object")
 	}
 	for key, member := range text {
 		if key != "format" && member != nil {
-			return nil, fmt.Errorf("Responses text field %q requires a native Responses model", key)
+			return nil, protocolErrorf("Responses", "text field %q requires a native Responses model", key)
 		}
 	}
 	if text["format"] == nil {
@@ -58,12 +59,12 @@ func chatResponseFormat(value any) (map[string]any, error) {
 	}
 	format, ok := asMap(text["format"])
 	if !ok {
-		return nil, fmt.Errorf("Responses text.format must be an object")
+		return nil, protocolErrorf("Responses", "text.format must be an object")
 	}
 	switch format["type"] {
 	case "text", "json_object":
 		if !onlyMembers(format, "type") {
-			return nil, fmt.Errorf("Responses text.format of type %q takes no other member", format["type"])
+			return nil, protocolErrorf("Responses", "text.format of type %q takes no other member", format["type"])
 		}
 		if format["type"] == "text" {
 			return nil, nil
@@ -71,7 +72,7 @@ func chatResponseFormat(value any) (map[string]any, error) {
 		return map[string]any{"type": "json_object"}, nil
 	case "json_schema":
 		if !onlyMembers(format, append([]string{"type"}, jsonSchemaMembers...)...) {
-			return nil, fmt.Errorf("Responses text.format has a json_schema member Chat does not define")
+			return nil, protocolErrorf("Responses", "text.format has a json_schema member Chat does not define")
 		}
 		schema := map[string]any{}
 		for key, member := range format {
@@ -81,7 +82,7 @@ func chatResponseFormat(value any) (map[string]any, error) {
 		}
 		return map[string]any{"type": "json_schema", "json_schema": schema}, nil
 	}
-	return nil, fmt.Errorf("Responses text.format type %q requires a native Responses model", format["type"])
+	return nil, protocolErrorf("Responses", "text.format type %q requires a native Responses model", format["type"])
 }
 
 // jsonSchemaMembers are the members of a json_schema format that both APIs

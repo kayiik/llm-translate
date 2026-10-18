@@ -40,7 +40,16 @@
       "id": "chatcmpl-tools"
     }
   },
-  "report": {},
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "tool arguments are not a JSON object representable by Anthropic Messages",
+        "path": "choices.0.message.tool_calls.1.function.arguments",
+        "severity": "material"
+      }
+    ]
+  },
   "value": {
     "content": [
       {

@@ -2,7 +2,6 @@ package translate
 
 import (
 	"encoding/json"
-	"errors"
 	"strconv"
 	"strings"
 )
@@ -556,7 +555,7 @@ func (e *StreamError) Error() string {
 
 // ErrStreamTruncated is the error of a source that ended without
 // message_stop and without an error event, such as a dropped connection.
-var ErrStreamTruncated = errors.New("Anthropic stream ended without message_stop")
+var ErrStreamTruncated = protocolErrorf("Anthropic", "stream ended without message_stop")
 
 // AnthropicSSEToOpenAIChunksWithOptions translates like
 // AnthropicSSEToOpenAIChunks and, once lines is exhausted, returns a report

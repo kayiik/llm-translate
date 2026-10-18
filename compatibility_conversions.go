@@ -64,6 +64,7 @@ func OpenAIMessagesToAnthropicWithReport(messages []map[string]any) ConversionRe
 	for i, message := range messages {
 		path := "messages." + strconv.Itoa(i)
 		losses = append(losses, chatMessageVendorLosses(path, message, "Anthropic Messages")...)
+		losses = append(losses, chatContentLosses(path+".content", message["content"], "Anthropic Messages", false)...)
 		role, _ := message["role"].(string)
 		if role == "developer" {
 			losses = append(losses, advisory(path+".role", LossApproximated, "developer instruction is merged into Anthropic system text"))
@@ -76,9 +77,9 @@ func OpenAIMessagesToAnthropicWithReport(messages []map[string]any) ConversionRe
 				for j, raw := range calls {
 					call, _ := asMap(raw)
 					fn, _ := asMap(call["function"])
-					args, _ := fn["arguments"].(string)
+					args, isString := fn["arguments"].(string)
 					var object map[string]any
-					if args != "" && json.Unmarshal([]byte(args), &object) != nil {
+					if !isString || (args != "" && (json.Unmarshal([]byte(args), &object) != nil || object == nil)) {
 						losses = append(losses, material(fmt.Sprintf("%s.tool_calls.%d.function.arguments", path, j), LossApproximated, "invalid or non-object JSON arguments become an empty object"))
 					}
 				}
@@ -102,6 +103,17 @@ func OpenAIResponseToAnthropicWithReport(response map[string]any, model string) 
 		}
 		message, _ := asMap(choice["message"])
 		losses = append(losses, chatMessageVendorLosses("choices.0.message", message, "Anthropic Messages")...)
+		if calls, ok := asList(message["tool_calls"]); ok {
+			for i, raw := range calls {
+				call, _ := asMap(raw)
+				fn, _ := asMap(call["function"])
+				args, isString := fn["arguments"].(string)
+				var object map[string]any
+				if !isString || (args != "" && (json.Unmarshal([]byte(args), &object) != nil || object == nil)) {
+					losses = append(losses, material(fmt.Sprintf("choices.0.message.tool_calls.%d.function.arguments", i), LossUnsupported, "tool arguments are not a JSON object representable by Anthropic Messages"))
+				}
+			}
+		}
 	}
 	return ConversionResult[map[string]any]{Value: OpenAIResponseToAnthropic(response, model), Report: NewReport(losses...)}
 }
@@ -126,6 +138,8 @@ func AnthropicResponseToOpenAIWithReport(response map[string]any, model string) 
 // ChatToResponsesWithReport converts a Chat request and reports known fallback synthesis.
 func ChatToResponsesWithReport(model string, messages []map[string]any, kw map[string]any, stream bool) ConversionResult[map[string]any] {
 	var losses []Loss
+	structured, _ := structuredOutputFindings(ConversionChatToResponses, kw)
+	losses = append(losses, structured...)
 	if kw["max_completion_tokens"] != nil {
 		losses = append(losses, advisory("max_completion_tokens", LossRenamed, "converted to max_output_tokens"))
 	} else if kw["max_tokens"] != nil {
@@ -168,15 +182,63 @@ func ChatToResponsesWithReport(model string, messages []map[string]any, kw map[s
 		}
 		prefix := "messages." + strconv.Itoa(i)
 		losses = append(losses, chatMessageVendorLosses(prefix, message, "OpenAI Responses")...)
+		role, _ := message["role"].(string)
+		userContent := role != "system" && role != "developer" && role != "assistant" && role != "tool"
+		losses = append(losses, chatContentLosses(prefix+".content", message["content"], "OpenAI Responses", userContent)...)
 		losses = append(losses, responsesDroppedCacheControl(prefix, message)...)
 	}
 	return ConversionResult[map[string]any]{Value: ChatToResponses(model, messages, kw, stream), Report: NewReport(losses...)}
 }
 
+// chatContentLosses describes the content the existing message converters
+// flatten or rebuild. Unknown Responses user parts still pass through, but
+// passing a foreign part unchanged is not a supported dialect conversion.
+func chatContentLosses(path string, content any, target string, responsesUser bool) []Loss {
+	if content == nil {
+		return nil
+	}
+	if _, ok := content.(string); ok {
+		return nil
+	}
+	parts, ok := asList(content)
+	if !ok {
+		return []Loss{material(path, LossDropped, "content is not a string or content-part list representable by "+target)}
+	}
+	var losses []Loss
+	for i, raw := range parts {
+		partPath := path + "." + strconv.Itoa(i)
+		if _, ok := raw.(string); ok && target == "Anthropic Messages" {
+			// The existing Anthropic converter carries plain string parts.
+			continue
+		}
+		part, ok := asMap(raw)
+		if !ok {
+			losses = append(losses, material(partPath, LossDropped, "content part is not an object representable by "+target))
+			continue
+		}
+		kind, _ := part["type"].(string)
+		text := kind == "text" || (target == "OpenAI Responses" && kind == "input_text")
+		switch {
+		case text:
+			if _, ok := part["text"].(string); !ok {
+				losses = append(losses, material(partPath+".text", LossUnsupported, "text must be a string"))
+			}
+		case responsesUser && (kind == "image_url" || kind == "input_image"):
+			// URL and detail are carried by responsesUserContent.
+		case responsesUser:
+			losses = append(losses, material(partPath, LossUnsupported, "content part is not a supported "+target+" input type"))
+		default:
+			losses = append(losses, material(partPath, LossDropped, "content part is not representable by "+target))
+		}
+	}
+	return losses
+}
+
 // responsesDroppedCacheControl reports the content-part cache_control values
-// that ChatToResponses drops. Responses has no cache breakpoints: it rebuilds
-// known user parts and flattens every other role to text. Unknown user part
-// types pass through unchanged, so their members are not dropped.
+// that ChatToResponses drops. This converter does not map Chat cache markers
+// to the target's model/API-specific caching controls: it rebuilds known user
+// parts and flattens every other role to text. Unknown user part types pass
+// through unchanged, so their members are not dropped.
 func responsesDroppedCacheControl(prefix string, message map[string]any) []Loss {
 	role, _ := message["role"].(string)
 	passthrough := role != "system" && role != "developer" && role != "assistant" && role != "tool"
@@ -204,6 +266,8 @@ func responsesDroppedCacheControl(prefix string, message map[string]any) []Loss 
 func ResponsesRequestToChatWithReport(payload map[string]any) (ConversionResult[OpenAIChatRequest], error) {
 	known := map[string]bool{"model": true, "input": true, "instructions": true, "stream": true, "max_output_tokens": true, "reasoning": true, "temperature": true, "top_p": true, "tools": true, "tool_choice": true, "metadata": true, "store": true, "background": true, "force_api_support": true, "previous_response_id": true, "conversation": true, "client_metadata": true, "include": true, "parallel_tool_calls": true, "prompt_cache_key": true, "text": true}
 	var losses []Loss
+	structured, _ := structuredOutputFindings(ConversionResponsesToChat, payload)
+	losses = append(losses, structured...)
 	for key, value := range payload {
 		if value != nil && !known[key] {
 			losses = append(losses, material(key, LossUnsupported, "Responses field requires a native Responses model"))
@@ -219,7 +283,9 @@ func ResponsesRequestToChatWithReport(payload map[string]any) (ConversionResult[
 		losses = append(losses, material("include", LossUnsupported, "included Responses-only data is not representable by Chat"))
 	}
 	messages, keywords, err := ResponsesRequestToChat(payload)
-	if err != nil && len(losses) == 0 {
+	if nested, ok := err.(*responsesContentError); ok {
+		losses = append(losses, material(nested.path, LossUnsupported, err.Error()))
+	} else if err != nil && len(losses) == 0 {
 		losses = append(losses, material("$", LossUnsupported, err.Error()))
 	}
 	if err == nil && keywords["response_format"] != nil {
@@ -231,6 +297,8 @@ func ResponsesRequestToChatWithReport(payload map[string]any) (ConversionResult[
 // ResponsesToChatWithReport converts a Responses object with fidelity findings.
 func ResponsesToChatWithReport(model string, response map[string]any) ConversionResult[map[string]any] {
 	var losses []Loss
+	_, usageReport := responsesUsageWithReport(response["usage"])
+	losses = append(losses, usageReport.Losses...)
 	if output, ok := asList(response["output"]); ok {
 		for i, raw := range output {
 			item, _ := asMap(raw)
@@ -270,6 +338,8 @@ func ChatResponseToResponsesWithReport(model string, chat map[string]any) Conver
 // constructing the Responses envelope.
 func ChatResponseToResponsesWithRequestAndReport(model string, chat map[string]any, request map[string]any) ConversionResult[map[string]any] {
 	var losses []Loss
+	_, usageReport := chatResponseUsage(chat["usage"])
+	losses = append(losses, usageReport.Losses...)
 	if choices, ok := asList(chat["choices"]); ok && len(choices) > 1 {
 		losses = append(losses, material("choices.1", LossDropped, "only the first Chat choice is converted"))
 	}

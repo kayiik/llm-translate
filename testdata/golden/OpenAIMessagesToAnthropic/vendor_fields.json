@@ -114,9 +114,21 @@
     "losses": [
       {
         "class": "dropped",
+        "detail": "content part is not representable by Anthropic Messages",
+        "path": "messages.1.content.1",
+        "severity": "material"
+      },
+      {
+        "class": "dropped",
         "detail": "cache_control is not representable by Anthropic Messages",
         "path": "messages.1.content.1.cache_control",
         "severity": "advisory"
+      },
+      {
+        "class": "dropped",
+        "detail": "content part is not representable by Anthropic Messages",
+        "path": "messages.1.content.2",
+        "severity": "material"
       },
       {
         "class": "dropped",
