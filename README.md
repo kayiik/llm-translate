@@ -164,6 +164,15 @@ parts a conversion cannot represent are reported at their source paths. A
 foreign user part passed through unchanged is still reported as unsupported;
 passthrough alone does not establish that the target accepts its type.
 
+Chat user `file` parts and Responses `input_file` parts retain `filename` and
+exactly one `file_data` or `file_id` carrier across their nested/flat envelopes.
+Provider file IDs retain their identity; callers must not treat them as portable
+across providers. Responses-only `file_url` remains a native requirement.
+Messages user URL images and plain base64 PDF documents map to Chat image/file
+parts in content order. Document titles, context, citations and cache controls
+still report material loss when that edge cannot carry them. These are pure
+carrier mappings: no upload service, remote download or media codec is involved.
+
 Usage conversion between Chat and Responses retains supplied `cached_tokens`,
 `cache_write_tokens` and `reasoning_tokens` detail counters. Responses→Chat omits
 missing/null optional counters and retains explicitly reported zero.

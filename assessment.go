@@ -458,7 +458,10 @@ func assessmentNestedUnknowns(payload map[string]any) []string {
 					check(nested, fmt.Sprintf("%s.content.%d.image_url", path, j), "url detail")
 				}
 				if nested, ok := asMap(part["source"]); ok {
-					check(nested, fmt.Sprintf("%s.content.%d.source", path, j), "type media_type data")
+					check(nested, fmt.Sprintf("%s.content.%d.source", path, j), "type media_type data url")
+				}
+				if nested, ok := asMap(part["file"]); ok {
+					check(nested, fmt.Sprintf("%s.content.%d.file", path, j), "filename file_data file_id")
 				}
 			}
 		}
@@ -492,8 +495,12 @@ func partFields(part map[string]any) string {
 		return "type text cache_control"
 	case "image_url", "input_image":
 		return "type image_url detail cache_control file_id source"
-	case "image":
+	case "image", "document":
 		return "type source cache_control"
+	case "file":
+		return "type file cache_control"
+	case "input_file":
+		return "type filename file_data file_id file_url cache_control"
 	case "thinking":
 		return "type thinking signature"
 	case "redacted_thinking":

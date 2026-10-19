@@ -464,7 +464,17 @@ func responsesInputToChatContent(value any) (any, error) {
 				"type":      "image_url",
 				"image_url": image,
 			})
-		case "refusal", "input_file", "file":
+		case "input_file":
+			if part["file_url"] != nil {
+				return nil, responsesContentAt(fmt.Sprintf("%d.file_url", i), protocolErrorf("Responses", "remote file URLs require a native Responses model"))
+			}
+			file := responseFileFields(part)
+			if losses := fileInputLosses(file, ""); len(losses) > 0 {
+				return nil, responsesContentAt(fmt.Sprint(i)+losses[0].Path, protocolErrorf("Responses", "file input requires a valid file_data or file_id carrier"))
+			}
+			allText = false
+			out = append(out, map[string]any{"type": "file", "file": file})
+		case "refusal", "file":
 			return nil, responsesContentAt(fmt.Sprint(i), protocolErrorf("Responses",
 				"content type %q requires a native Responses model",
 				part["type"],
@@ -860,6 +870,11 @@ func responsesUserContent(v any) any {
 					image["detail"] = detail
 				}
 				out = append(out, image)
+			case "file":
+				file, _ := asMap(pm["file"])
+				mapped := responseFileFields(file)
+				mapped["type"] = "input_file"
+				out = append(out, mapped)
 			default:
 				out = append(out, part)
 			}

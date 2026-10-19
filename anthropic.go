@@ -177,6 +177,16 @@ func AnthropicRequestToOpenAI(payload map[string]any) ([]map[string]any, map[str
 			case "image":
 				allowedKeys(&incompatible, bp, block, "type", "source")
 				source, _ := block["source"].(map[string]any)
+				if source["type"] == "url" {
+					allowedKeys(&incompatible, bp+".source", source, "type", "url")
+					reference, valid := source["url"].(string)
+					if role != "user" || !valid || (!strings.HasPrefix(reference, "https://") && !strings.HasPrefix(reference, "http://")) {
+						incompatible = append(incompatible, bp)
+						continue
+					}
+					parts = append(parts, map[string]any{"type": "image_url", "image_url": map[string]any{"url": reference}})
+					continue
+				}
 				allowedKeys(&incompatible, bp+".source", source, "type", "media_type", "data")
 				mime, _ := source["media_type"].(string)
 				data, dataOK := source["data"].(string)
@@ -186,6 +196,16 @@ func AnthropicRequestToOpenAI(payload map[string]any) ([]map[string]any, map[str
 					continue
 				}
 				parts = append(parts, map[string]any{"type": "image_url", "image_url": map[string]any{"url": "data:" + mime + ";base64," + data}})
+			case "document":
+				allowedKeys(&incompatible, bp, block, "type", "source")
+				source, _ := block["source"].(map[string]any)
+				allowedKeys(&incompatible, bp+".source", source, "type", "media_type", "data")
+				data, valid := source["data"].(string)
+				if role != "user" || source["type"] != "base64" || source["media_type"] != "application/pdf" || !valid || data == "" {
+					incompatible = append(incompatible, bp)
+					continue
+				}
+				parts = append(parts, map[string]any{"type": "file", "file": map[string]any{"file_data": "data:application/pdf;base64," + data}})
 			case "tool_use":
 				allowedKeys(&incompatible, bp, block, "type", "id", "name", "input")
 				id, idOK := block["id"].(string)

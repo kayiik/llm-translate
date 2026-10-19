@@ -225,6 +225,8 @@ func chatContentLosses(path string, content any, target string, responsesUser bo
 			}
 		case responsesUser && (kind == "image_url" || kind == "input_image"):
 			// URL and detail are carried by responsesUserContent.
+		case responsesUser && kind == "file":
+			losses = append(losses, fileInputLosses(part["file"], partPath+".file")...)
 		case responsesUser:
 			losses = append(losses, material(partPath, LossUnsupported, "content part is not a supported "+target+" input type"))
 		default:
@@ -250,7 +252,7 @@ func responsesDroppedCacheControl(prefix string, message map[string]any) []Loss 
 			continue
 		}
 		switch part["type"] {
-		case "text", "input_text", "image_url", "input_image":
+		case "text", "input_text", "image_url", "input_image", "file":
 		default:
 			if passthrough {
 				continue
