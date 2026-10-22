@@ -11,11 +11,46 @@ Zero-dependency Go library for bidirectional protocol translation between the An
 - **Typed wire codecs:** package `wire` decodes and re-encodes all three surfaces without losing unknown or vendor fields.
 - **Pure Standard Library:** Zero CGO, zero external dependencies.
 
+Conversions support finite mappings, not every feature of each API. Consult
+[loss reports](#loss-reports) and [fidelity assessments](#fidelity-and-source-observations)
+for losses and unknowns. The [wire round-trip guarantee](#round-trip-guarantee)
+applies to decoding and re-encoding the same surface, not semantic equivalence
+across protocols or providers.
+
+## Local realtime profile
+
+This source includes a `realtime` package mapping a limited OpenAI GA audio
+session to Gemini Live. Its presence in this repository does not establish
+availability in a published release.
+
+- Input and output are raw PCM16, mono, little-endian at 24 kHz. The explicit
+  format type is `audio/pcm`; an omitted rate means 24 kHz, and other declared
+  rates are rejected. Input samples are forwarded unchanged with
+  `audio/pcm;rate=24000`, relying on Gemini's documented provider-side input
+  resampling. No local audio conversion is performed.
+- The profile requires manual input turns (`turn_detection: null`) and the
+  Gemini voice `Puck`. It supports audio responses, confirmed interruption,
+  continued input on the same session, and correlated function calls/results.
+- Continuation uses provider-delivered context, **not accurate heard history**.
+  Accurate heard-history reconciliation remains unresolved.
+  `conversation.item.truncate` is refused and requires closing the session;
+  refusal or closure does not satisfy that requirement.
+- Callers serialize all `Session` calls and forward outputs in order. Transport,
+  playback stop/queue flush, tool execution and billing remain caller-owned;
+  close both sides on an `Error` with `RequiresClose`. Session usage is not
+  established by this mapping.
+
 ## Installation
+
+Requires Go 1.26.5 or newer.
 
 ```bash
 go get github.com/kayiik/llm-translate
 ```
+
+`go get` installs published source; it does not necessarily include every
+addition in this checkout. Published dependency availability and the current
+source are separate integration concerns.
 
 ## Quick Start
 
@@ -36,6 +71,11 @@ translate.OpenAIStreamToAnthropicSSE(chunksIter, "claude-3-5-sonnet", func(sseEv
     w.(http.Flusher).Flush()
 })
 ```
+
+This legacy helper may estimate output tokens from text; its emitted usage is
+not necessarily provider-reported usage. Prefer the
+[observed stream APIs](#fidelity-and-source-observations) when source usage and
+terminal evidence matter.
 
 ### Stream Anthropic SSE as OpenAI Chunks
 
@@ -180,14 +220,15 @@ Chat→Responses preserves the legacy required detail objects and cached/reasoni
 fields, using synthetic zero placeholders when absent from the source. Those
 placeholders are wire compatibility values, not provider-reported measurements;
 source-presence observations use the source-side APIs below. Cache-write detail
-is carried when supplied. Valid-source aggregate aliases and the legacy
-absent/zero-total fallback are preserved.
+is carried when supplied. Chat→Responses preserves valid-source aggregate
+aliases and the legacy absent/zero-total fallback. Responses→Chat derives a total
+only when it is absent and preserves an explicitly reported zero total.
 
-Chat→Responses aggregate usage accepts exact `json.Number` integers without
+Both directions accept exact aggregate `json.Number` integers without
 floating-point conversion, including int64-sized values. Invalid supplied
 aggregate counts or an overflowing derived total leave target usage unknown
 (`null`); WithReport identifies the material source path instead of fabricating
-measured zeros. Legacy valid-value aliases, fallback and required placeholders
+measured zeros. Direction-specific fallback and required wire placeholders
 remain separate from source observation provenance.
 
 ## Fidelity and source observations
