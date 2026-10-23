@@ -194,6 +194,13 @@ func AssessConversion(id ConversionID, phase ObservationPhase, payload map[strin
 			return a
 		}
 	}
+	// The observed Chat routing annotation is informational, not destination
+	// response content. Other shapes remain unassessed.
+	if phase == PhaseResponse && (id == ConversionResponsesToChat || id == ConversionMessagesToChat) {
+		if _, ok := payload["provider"].(string); ok {
+			known += " provider"
+		}
+	}
 	for k, v := range payload {
 		if v != nil && !assessmentKnown(known, k) {
 			a.UnknownPaths = append(a.UnknownPaths, k)
@@ -481,9 +488,22 @@ func assessmentNestedUnknowns(payload map[string]any) []string {
 	for i, raw := range mustList(payload["choices"]) {
 		choice, _ := asMap(raw)
 		path := fmt.Sprintf("choices.%d", i)
-		check(choice, path, "index message finish_reason")
+		known := "index message finish_reason"
+		// An opaque native reason cannot supply missing/unknown standard
+		// completion semantics. Only an annotation beside a known reason is safe.
+		if _, ok := choice["native_finish_reason"].(string); ok {
+			switch choice["finish_reason"] {
+			case "stop", "length", "tool_calls":
+				known += " native_finish_reason"
+			}
+		}
+		check(choice, path, known)
 		if message, ok := asMap(choice["message"]); ok {
-			check(message, path+".message", "role content refusal tool_calls reasoning_content reasoning_details")
+			known := "role content refusal tool_calls reasoning_content reasoning_details"
+			if _, ok := message["reasoning"].(string); ok {
+				known += " reasoning"
+			}
+			check(message, path+".message", known)
 		}
 	}
 	return unknown

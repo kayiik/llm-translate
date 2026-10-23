@@ -11,7 +11,7 @@ import "strconv"
 //     Providers store it at tool_calls.N.extra_content.google.thought_signature,
 //     tool_calls.N.function.thought_signature or tool_calls.N.thought_signature;
 //     each location that carries one is reported.
-//   - Dropped reasoning_details, reasoning_content and cache_control are
+//   - Dropped reasoning_details, reasoning_content, reasoning text and cache_control are
 //     advisory: the answer is intact, and a product that depends on them can
 //     still reject the loss by path.
 //   - Dropped reasoning items and blocks are reported at <item path>.reasoning
@@ -95,6 +95,13 @@ func chatMessageVendorLosses(prefix string, message map[string]any, target strin
 // delta that a conversion to target drops.
 func reasoningFieldLosses(prefix string, message map[string]any, target string) []Loss {
 	var losses []Loss
+	if value := message["reasoning"]; value != nil {
+		if text, ok := value.(string); !ok {
+			losses = append(losses, material(prefix+".reasoning", LossUnsupported, "reasoning extension must be text"))
+		} else if text != "" {
+			losses = append(losses, advisory(prefix+".reasoning", LossDropped, "reasoning text is not representable by "+target))
+		}
+	}
 	if present(message["reasoning_details"]) {
 		losses = append(losses, droppedReasoningDetails(prefix+".reasoning_details", target))
 	}
