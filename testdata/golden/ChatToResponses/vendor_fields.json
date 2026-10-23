@@ -136,6 +136,12 @@
         "severity": "advisory"
       },
       {
+        "class": "unsupported",
+        "detail": "content part is not a supported OpenAI Responses input type",
+        "path": "messages.1.content.2",
+        "severity": "material"
+      },
+      {
         "class": "dropped",
         "detail": "reasoning_details are not representable by OpenAI Responses",
         "path": "messages.2.reasoning_details",

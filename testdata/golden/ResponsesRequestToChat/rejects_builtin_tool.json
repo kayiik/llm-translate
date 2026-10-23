@@ -12,8 +12,8 @@
     "losses": [
       {
         "class": "unsupported",
-        "detail": "Responses built-in tools require a native Responses model",
-        "path": "$",
+        "detail": "only client function tools are in this finite mapping",
+        "path": "tools.0.type",
         "severity": "material"
       }
     ]

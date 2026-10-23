@@ -56,6 +56,7 @@
             "type": "input_text"
           },
           {
+            "detail": "low",
             "image_url": "data:image/png;base64,AA==",
             "type": "input_image"
           }

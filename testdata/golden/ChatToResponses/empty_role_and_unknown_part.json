@@ -21,7 +21,16 @@
     "model": "gpt-test",
     "stream": false
   },
-  "report": {},
+  "report": {
+    "losses": [
+      {
+        "class": "unsupported",
+        "detail": "content part is not a supported OpenAI Responses input type",
+        "path": "messages.1.content.0",
+        "severity": "material"
+      }
+    ]
+  },
   "value": {
     "input": [
       {

@@ -3,6 +3,7 @@ package translate
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"strings"
 	"time"
 )
@@ -144,8 +145,8 @@ func ResponsesRequestToChat(
 	}
 	for key, value := range payload {
 		if !allowed[key] && value != nil {
-			return nil, nil, fmt.Errorf(
-				"Responses field %q requires a native Responses model", key,
+			return nil, nil, protocolErrorf("Responses",
+				"field %q requires a native Responses model", key,
 			)
 		}
 	}
@@ -192,7 +193,7 @@ func ResponsesRequestToChat(
 			return nil, nil, fmt.Errorf("include must be an array")
 		}
 		if len(items) > 0 {
-			return nil, nil, fmt.Errorf("Responses include values require a native Responses model")
+			return nil, nil, protocolErrorf("Responses", "include values require a native Responses model")
 		}
 	}
 	if instructions := payload["instructions"]; instructions != nil {
@@ -218,10 +219,10 @@ func ResponsesRequestToChat(
 	case string:
 		appendMessage("user", input)
 	case []any:
-		for _, raw := range input {
+		for i, raw := range input {
 			item, ok := asMap(raw)
 			if !ok {
-				return nil, nil, fmt.Errorf("Responses input item must be an object")
+				return nil, nil, protocolErrorf("Responses", "input item must be an object")
 			}
 			itemType, _ := item["type"].(string)
 			switch itemType {
@@ -229,7 +230,7 @@ func ResponsesRequestToChat(
 				role, _ := item["role"].(string)
 				content, err := responsesInputToChatContent(item["content"])
 				if err != nil {
-					return nil, nil, err
+					return nil, nil, responsesContentAt(fmt.Sprintf("input.%d.content", i), err)
 				}
 				appendMessage(role, content)
 			case "function_call":
@@ -257,8 +258,8 @@ func ResponsesRequestToChat(
 					"content": output,
 				})
 			default:
-				return nil, nil, fmt.Errorf(
-					"Responses input type %q is not supported by Chat fallback", itemType,
+				return nil, nil, protocolErrorf("Responses",
+					"input type %q is not supported by Chat fallback", itemType,
 				)
 			}
 		}
@@ -266,13 +267,13 @@ func ResponsesRequestToChat(
 		role, _ := input["role"].(string)
 		content, err := responsesInputToChatContent(input["content"])
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, responsesContentAt("input.content", err)
 		}
 		appendMessage(role, content)
 	case nil:
-		return nil, nil, fmt.Errorf("Responses input is required")
+		return nil, nil, protocolErrorf("Responses", "input is required")
 	default:
-		return nil, nil, fmt.Errorf("Responses input has an unsupported shape")
+		return nil, nil, protocolErrorf("Responses", "input has an unsupported shape")
 	}
 	kw := map[string]any{}
 	if value := payload["max_output_tokens"]; value != nil {
@@ -281,8 +282,8 @@ func ResponsesRequestToChat(
 	if reasoning, ok := asMap(payload["reasoning"]); ok {
 		for key, value := range reasoning {
 			if key != "effort" && value != nil {
-				return nil, nil, fmt.Errorf(
-					"Responses reasoning field %q requires a native Responses model",
+				return nil, nil, protocolErrorf("Responses",
+					"reasoning field %q requires a native Responses model",
 					key,
 				)
 			}
@@ -304,8 +305,8 @@ func ResponsesRequestToChat(
 		for _, raw := range tools {
 			tool, ok := asMap(raw)
 			if !ok || tool["type"] != "function" {
-				return nil, nil, fmt.Errorf(
-					"Responses built-in tools require a native Responses model",
+				return nil, nil, protocolErrorf("Responses",
+					"built-in tools require a native Responses model",
 				)
 			}
 			allowedToolFields := map[string]bool{
@@ -314,15 +315,18 @@ func ResponsesRequestToChat(
 			}
 			for key, value := range tool {
 				if !allowedToolFields[key] && value != nil {
-					return nil, nil, fmt.Errorf(
-						"Responses function tool field %q requires a native Responses model",
+					return nil, nil, protocolErrorf("Responses",
+						"function tool field %q requires a native Responses model",
 						key,
 					)
 				}
 			}
-			function := map[string]any{
-				"name": tool["name"], "description": tool["description"],
-				"parameters": tool["parameters"],
+			function := map[string]any{"name": tool["name"]}
+			if description := tool["description"]; description != nil {
+				function["description"] = description
+			}
+			if parameters := tool["parameters"]; parameters != nil {
+				function["parameters"] = parameters
 			}
 			if strict := tool["strict"]; strict != nil {
 				function["strict"] = strict
@@ -342,8 +346,8 @@ func ResponsesRequestToChat(
 	if choice := payload["tool_choice"]; choice != nil {
 		if choiceMap, ok := asMap(choice); ok {
 			if choiceMap["type"] != "function" {
-				return nil, nil, fmt.Errorf(
-					"Responses tool choice type %q requires a native Responses model",
+				return nil, nil, protocolErrorf("Responses",
+					"tool choice type %q requires a native Responses model",
 					choiceMap["type"],
 				)
 			}
@@ -381,7 +385,7 @@ func responsesToolOutputToText(value any) (string, error) {
 	for _, raw := range parts {
 		part, ok := asMap(raw)
 		if !ok {
-			return "", fmt.Errorf("Responses function output part must be an object")
+			return "", protocolErrorf("Responses", "function output part must be an object")
 		}
 		switch part["type"] {
 		case "input_text", "text", "output_text":
@@ -389,13 +393,29 @@ func responsesToolOutputToText(value any) (string, error) {
 				text.WriteString(value)
 			}
 		default:
-			return "", fmt.Errorf(
-				"Responses function output type %q requires a native Responses model",
+			return "", protocolErrorf("Responses",
+				"function output type %q requires a native Responses model",
 				part["type"],
 			)
 		}
 	}
 	return text.String(), nil
+}
+
+// responsesContentError retains a source-part path without changing existing
+// native-required error messages exposed by ResponsesRequestToChat.
+type responsesContentError struct {
+	path string
+	err  error
+}
+
+func (e *responsesContentError) Error() string { return e.err.Error() }
+
+func responsesContentAt(prefix string, err error) error {
+	if nested, ok := err.(*responsesContentError); ok {
+		return &responsesContentError{path: prefix + "." + nested.path, err: nested.err}
+	}
+	return &responsesContentError{path: prefix, err: err}
 }
 
 func responsesInputToChatContent(value any) (any, error) {
@@ -409,7 +429,7 @@ func responsesInputToChatContent(value any) (any, error) {
 	out := make([]any, 0, len(parts))
 	var textOnly strings.Builder
 	allText := true
-	for _, raw := range parts {
+	for i, raw := range parts {
 		part, ok := asMap(raw)
 		if !ok {
 			continue
@@ -425,16 +445,16 @@ func responsesInputToChatContent(value any) (any, error) {
 		case "input_image", "image_url":
 			allText = false
 			if part["file_id"] != nil {
-				return nil, fmt.Errorf(
-					"Responses file-backed images require a native Responses model",
-				)
+				return nil, responsesContentAt(fmt.Sprintf("%d.file_id", i), protocolErrorf("Responses",
+					"file-backed images require a native Responses model",
+				))
 			}
 			imageURL := part["image_url"]
 			if imageURL == nil {
 				imageURL = part["url"]
 			}
 			if imageURL == nil || imageURL == "" {
-				return nil, fmt.Errorf("Responses input image requires image_url")
+				return nil, responsesContentAt(fmt.Sprintf("%d.image_url", i), protocolErrorf("Responses", "input image requires image_url"))
 			}
 			image := map[string]any{"url": imageURL}
 			if detail := part["detail"]; detail != nil {
@@ -444,16 +464,26 @@ func responsesInputToChatContent(value any) (any, error) {
 				"type":      "image_url",
 				"image_url": image,
 			})
-		case "refusal", "input_file", "file":
-			return nil, fmt.Errorf(
-				"Responses content type %q requires a native Responses model",
+		case "input_file":
+			if part["file_url"] != nil {
+				return nil, responsesContentAt(fmt.Sprintf("%d.file_url", i), protocolErrorf("Responses", "remote file URLs require a native Responses model"))
+			}
+			file := responseFileFields(part)
+			if losses := fileInputLosses(file, ""); len(losses) > 0 {
+				return nil, responsesContentAt(fmt.Sprint(i)+losses[0].Path, protocolErrorf("Responses", "file input requires a valid file_data or file_id carrier"))
+			}
+			allText = false
+			out = append(out, map[string]any{"type": "file", "file": file})
+		case "refusal", "file":
+			return nil, responsesContentAt(fmt.Sprint(i), protocolErrorf("Responses",
+				"content type %q requires a native Responses model",
 				part["type"],
-			)
+			))
 		default:
-			return nil, fmt.Errorf(
-				"Responses content type %q is not supported by Chat fallback",
+			return nil, responsesContentAt(fmt.Sprint(i), protocolErrorf("Responses",
+				"content type %q is not supported by Chat fallback",
 				part["type"],
-			)
+			))
 		}
 	}
 	if allText {
@@ -518,6 +548,9 @@ func ResponsesToChat(model string, resp map[string]any) map[string]any {
 	if len(toolCalls) > 0 {
 		msg["tool_calls"] = toolCalls
 		msg["content"] = nil
+		if text.Len() > 0 {
+			msg["content"] = text.String()
+		}
 		finish = "tool_calls"
 	} else {
 		msg["content"] = text.String()
@@ -609,31 +642,26 @@ func ChatResponseToResponsesWithRequest(
 	if incomplete != nil {
 		response["incomplete_details"] = incomplete
 	}
-	if usage, ok := asMap(chat["usage"]); ok && len(usage) > 0 {
-		input := firstNumber(usage, "prompt_tokens", "input_tokens")
-		outputTokens := firstNumber(usage, "completion_tokens", "output_tokens")
-		total := firstNumber(usage, "total_tokens")
-		if total == 0 {
-			total = input + outputTokens
-		}
-		response["usage"] = map[string]any{
-			"input_tokens": input, "output_tokens": outputTokens,
-			"total_tokens": total,
-			"input_tokens_details": map[string]any{
-				"cached_tokens": tokenDetail(usage, "prompt_tokens_details", "cached_tokens"),
-			},
-			"output_tokens_details": map[string]any{
-				"reasoning_tokens": tokenDetail(usage, "completion_tokens_details", "reasoning_tokens"),
-			},
-		}
+	if mapped, _ := chatResponseUsage(chat["usage"]); mapped != nil {
+		response["usage"] = mapped
 	}
 
 	return response
 }
 
-func tokenDetail(usage map[string]any, detailsKey, valueKey string) int {
-	details, _ := asMap(usage[detailsKey])
-	return firstNumber(details, valueKey)
+// copyTokenDetails carries supplied counters without inventing measurements.
+// Required target-wire placeholders, if any, are added separately by the caller.
+func copyTokenDetails(target map[string]any, targetKey string, source map[string]any, sourceKey string, fields ...string) {
+	details, _ := asMap(source[sourceKey])
+	mapped := map[string]any{}
+	for _, field := range fields {
+		if value := details[field]; value != nil {
+			mapped[field] = value
+		}
+	}
+	if len(mapped) > 0 {
+		target[targetKey] = mapped
+	}
 }
 
 // NewResponseEnvelope creates the schema-complete Response shape used whenever
@@ -686,18 +714,72 @@ func FailedResponseEnvelope(
 	return response
 }
 
-func firstNumber(values map[string]any, keys ...string) int {
+// firstNumber retains absence/invalidity and validates exact source integers.
+// A bad preferred field cannot silently fall through to an alias or become 0.
+func firstNumber(values map[string]any, keys ...string) CountObservation {
 	for _, key := range keys {
-		switch value := values[key].(type) {
-		case float64:
-			return int(value)
-		case int:
-			return value
-		case int64:
-			return int(value)
+		count := observedCount(values, key, UsageReported)
+		if count.Presence != CountAbsent {
+			return count
 		}
 	}
-	return 0
+	return CountObservation{Presence: CountAbsent, Provenance: UsageReported, Path: keys[0]}
+}
+
+func chatResponseUsage(raw any) (map[string]any, Report) {
+	if raw == nil {
+		return nil, Report{}
+	}
+	usage, ok := asMap(raw)
+	if !ok {
+		return nil, NewReport(material("usage", LossUnsupported, "source usage must be an object"))
+	}
+	if len(usage) == 0 {
+		return nil, Report{}
+	}
+	input := firstNumber(usage, "prompt_tokens", "input_tokens")
+	output := firstNumber(usage, "completion_tokens", "output_tokens")
+	total := firstNumber(usage, "total_tokens")
+	var losses []Loss
+	for _, count := range []CountObservation{input, output, total} {
+		if count.Presence == CountInvalid {
+			losses = append(losses, material("usage."+count.Path, LossUnsupported, "source aggregate count is invalid or outside exact int64 range; no zero is synthesized"))
+		}
+	}
+	if len(losses) > 0 {
+		return nil, NewReport(losses...)
+	}
+	// Preserve the legacy absent/zero-total fallback, but bound arithmetic.
+	// Missing aggregate fields are target placeholders, never source facts.
+	if total.Value == 0 {
+		if output.Value > math.MaxInt64-input.Value {
+			return nil, NewReport(material("usage.total_tokens", LossUnsupported, "derived aggregate exceeds int64 range"))
+		}
+		total.Value = input.Value + output.Value
+	}
+	mapped := map[string]any{"input_tokens": usageWireInteger(input.Value), "output_tokens": usageWireInteger(output.Value), "total_tokens": usageWireInteger(total.Value)}
+	copyTokenDetails(mapped, "input_tokens_details", usage, "prompt_tokens_details", "cached_tokens", "cache_write_tokens")
+	copyTokenDetails(mapped, "output_tokens_details", usage, "completion_tokens_details", "reasoning_tokens")
+	// Retain required legacy target shape without labelling placeholders as
+	// provider measurements; source observations use the original usage.
+	for key, field := range map[string]string{"input_tokens_details": "cached_tokens", "output_tokens_details": "reasoning_tokens"} {
+		details, ok := asMap(mapped[key])
+		if !ok {
+			details = map[string]any{}
+			mapped[key] = details
+		}
+		if details[field] == nil {
+			details[field] = 0
+		}
+	}
+	return mapped, Report{}
+}
+
+func usageWireInteger(value int64) any {
+	if int64(int(value)) == value {
+		return int(value)
+	}
+	return value
 }
 
 // ResponsesToChatChunks renders a (buffered) Responses reply as a small sequence
@@ -722,10 +804,11 @@ func ResponsesToChatChunks(model string, resp map[string]any) []string {
 	}
 
 	chunks := []string{mk(map[string]any{"role": "assistant"}, nil, nil)}
+	if content, ok := msg["content"].(string); ok && content != "" {
+		chunks = append(chunks, mk(map[string]any{"content": content}, nil, nil))
+	}
 	if tc, ok := msg["tool_calls"]; ok {
 		chunks = append(chunks, mk(map[string]any{"tool_calls": tc}, nil, nil))
-	} else if content, ok := msg["content"].(string); ok && content != "" {
-		chunks = append(chunks, mk(map[string]any{"content": content}, nil, nil))
 	}
 	chunks = append(chunks, mk(map[string]any{}, finish, chat["usage"]))
 	return chunks
@@ -777,10 +860,21 @@ func responsesUserContent(v any) any {
 				out = append(out, map[string]any{"type": "input_text", "text": pm["text"]})
 			case "image_url", "input_image":
 				img := pm["image_url"]
+				detail := pm["detail"]
 				if m, ok := asMap(img); ok {
 					img = m["url"]
+					detail = m["detail"]
 				}
-				out = append(out, map[string]any{"type": "input_image", "image_url": img})
+				image := map[string]any{"type": "input_image", "image_url": img}
+				if detail != nil {
+					image["detail"] = detail
+				}
+				out = append(out, image)
+			case "file":
+				file, _ := asMap(pm["file"])
+				mapped := responseFileFields(file)
+				mapped["type"] = "input_file"
+				out = append(out, mapped)
 			default:
 				out = append(out, part)
 			}
@@ -804,14 +898,17 @@ func responsesTools(tools []any) []any {
 		}
 		if tm["type"] == "function" {
 			if fn, ok := asMap(tm["function"]); ok {
-				rt := map[string]any{"type": "function", "name": fn["name"]}
+				// Responses requires nullable parameters/strict fields and has a
+				// different implicit strict policy. Preserve Chat's non-strict
+				// default explicitly; do not normalize or rewrite its schema.
+				rt := map[string]any{"type": "function", "name": fn["name"], "parameters": nil, "strict": false}
 				if v, ok := fn["description"]; ok {
 					rt["description"] = v
 				}
 				if v, ok := fn["parameters"]; ok {
 					rt["parameters"] = v
 				}
-				if v, ok := fn["strict"]; ok {
+				if v, ok := fn["strict"]; ok && v != nil {
 					rt["strict"] = v
 				}
 				out = append(out, rt)
@@ -837,17 +934,42 @@ func responsesToolChoice(tc any) any {
 }
 
 func responsesUsage(v any) map[string]any {
+	mapped, _ := responsesUsageWithReport(v)
+	return mapped
+}
+
+func responsesUsageWithReport(v any) (map[string]any, Report) {
+	if v == nil {
+		return nil, Report{}
+	}
 	u, ok := asMap(v)
 	if !ok {
-		return nil
+		return nil, NewReport(material("usage", LossUnsupported, "source usage must be an object"))
 	}
-	in := toInt(u["input_tokens"])
-	out := toInt(u["output_tokens"])
-	total := toInt(u["total_tokens"])
-	if total == 0 {
-		total = in + out
+	in := firstNumber(u, "input_tokens")
+	out := firstNumber(u, "output_tokens")
+	total := firstNumber(u, "total_tokens")
+	var losses []Loss
+	for _, count := range []CountObservation{in, out, total} {
+		if count.Presence == CountInvalid {
+			losses = append(losses, material("usage."+count.Path, LossUnsupported, "source aggregate count is invalid or outside exact int64 range; no zero is synthesized"))
+		}
 	}
-	return map[string]any{"prompt_tokens": in, "completion_tokens": out, "total_tokens": total}
+	if len(losses) > 0 {
+		return nil, NewReport(losses...)
+	}
+	// Derive only an absent total. A reported zero is source evidence, not
+	// a missing value; absent child counters retain legacy wire placeholders.
+	if total.Presence == CountAbsent {
+		if out.Value > math.MaxInt64-in.Value {
+			return nil, NewReport(material("usage.total_tokens", LossUnsupported, "derived aggregate exceeds int64 range"))
+		}
+		total.Value = in.Value + out.Value
+	}
+	mapped := map[string]any{"prompt_tokens": usageWireInteger(in.Value), "completion_tokens": usageWireInteger(out.Value), "total_tokens": usageWireInteger(total.Value)}
+	copyTokenDetails(mapped, "prompt_tokens_details", u, "input_tokens_details", "cached_tokens", "cache_write_tokens")
+	copyTokenDetails(mapped, "completion_tokens_details", u, "output_tokens_details", "reasoning_tokens")
+	return mapped, Report{}
 }
 
 func responsesIncompleteMaxTokens(resp map[string]any) bool {
