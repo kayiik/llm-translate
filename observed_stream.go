@@ -115,6 +115,21 @@ func AnthropicSSEToOpenAIChunksObserved(lines func() (string, bool), model strin
 	}
 	if terminal.Completed && opts.IncludeUsage {
 		u := s.usage.Snapshot(quality)
+		// Preserve the wire projection of reported Messages counters even when
+		// optional cache categories are omitted. This local projection does not
+		// turn absent cache details into observed zeroes in the source ledger.
+		if u.InputTokens.Presence == CountAbsent && allPresent(u.BaseInputTokens, u.OutputTokens) && u.CacheReadTokens.Presence != CountInvalid && u.CacheWriteTokens.Presence != CountInvalid {
+			counts := []CountObservation{u.BaseInputTokens}
+			for _, cache := range []CountObservation{u.CacheReadTokens, u.CacheWriteTokens} {
+				if cache.Presence == CountPresent {
+					counts = append(counts, cache)
+				}
+			}
+			u.InputTokens = deriveSum("reported_messages_input", counts...)
+			if u.TotalTokens.Presence == CountAbsent {
+				u.TotalTokens = deriveSum("reported_messages_input+output_tokens", u.InputTokens, u.OutputTokens)
+			}
+		}
 		if allPresent(u.InputTokens, u.OutputTokens, u.TotalTokens) {
 			usage := map[string]any{"prompt_tokens": u.InputTokens.Value, "completion_tokens": u.OutputTokens.Value, "total_tokens": u.TotalTokens.Value}
 			details := map[string]any{}
@@ -209,7 +224,13 @@ func OpenAIStreamToAnthropicSSEObserved(chunks func() (string, bool), model stri
 				if _, data, ok := strings.Cut(event, "data: "); ok {
 					var body map[string]any
 					if json.Unmarshal([]byte(strings.TrimSpace(data)), &body) == nil {
-						body["usage"] = map[string]any{"output_tokens": usage.OutputTokens.Value}
+						counts := map[string]any{"output_tokens": usage.OutputTokens.Value}
+						// Input usage can arrive only in the terminal Chat chunk,
+						// after message_start has already been sent.
+						if usage.InputTokens.Presence == CountPresent {
+							counts["input_tokens"] = usage.InputTokens.Value
+						}
+						body["usage"] = counts
 						event = sse("message_delta", body)
 					}
 				}

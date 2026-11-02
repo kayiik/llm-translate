@@ -63,6 +63,40 @@ func TestObservedMessagesStreamTruncatedAndError(t *testing.T) {
 	}
 }
 
+func TestObservedMessagesStreamFinalUsage(t *testing.T) {
+	for _, tc := range []struct {
+		name, startUsage, deltaUsage, wantPrompt, wantCompletion, wantTotal string
+	}{
+		{"known", `"input_tokens":2,"output_tokens":0`, `"output_tokens":1`, `"prompt_tokens":2`, `"completion_tokens":1`, `"total_tokens":3`},
+		{"known zero", `"input_tokens":0,"output_tokens":0`, `"output_tokens":0`, `"prompt_tokens":0`, `"completion_tokens":0`, `"total_tokens":0`},
+		{"absent input", `"output_tokens":0`, `"output_tokens":1`, "", "", ""},
+		{"absent output", `"input_tokens":2,"output_tokens":0`, ``, "", "", ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			lines := []string{
+				`data: {"type":"message_start","message":{"usage":{` + tc.startUsage + `}}}`,
+			}
+			if tc.deltaUsage != "" {
+				lines = append(lines, `data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{`+tc.deltaUsage+`}}`)
+			}
+			lines = append(lines, `data: {"type":"message_stop"}`)
+			var output []string
+			result := AnthropicSSEToOpenAIChunksObserved(pullItems(lines), "m", func(s string) { output = append(output, s) }, StreamObservationOptions{IncludeUsage: true})
+			if !result.Completed || result.Err != nil {
+				t.Fatalf("stream did not complete: %+v", result)
+			}
+			joined := strings.Join(output, "")
+			if tc.wantPrompt == "" {
+				if strings.Contains(joined, `"usage":{"prompt_tokens"`) {
+					t.Fatalf("final usage was fabricated from an unknown component: %s", joined)
+				}
+			} else if !strings.Contains(joined, tc.wantPrompt) || !strings.Contains(joined, tc.wantCompletion) || !strings.Contains(joined, tc.wantTotal) {
+				t.Fatalf("final usage did not preserve known counts: %s", joined)
+			}
+		})
+	}
+}
+
 func TestObservedChatStreamZeroUsageAndTermination(t *testing.T) {
 	for _, complete := range []bool{false, true} {
 		chunks := []string{`{"choices":[{"index":0,"delta":{"content":"hello"}}]}`, `{"choices":[],"usage":{"prompt_tokens":11,"completion_tokens":0,"prompt_tokens_details":{"cached_tokens":4,"cache_write_tokens":3},"completion_tokens_details":{"reasoning_tokens":0}}}`}
@@ -82,6 +116,46 @@ func TestObservedChatStreamZeroUsageAndTermination(t *testing.T) {
 		} else if strings.Contains(joined, "event: message_stop") {
 			t.Fatalf("truncation looked complete: %s", joined)
 		}
+	}
+}
+
+func TestObservedChatStreamLateInputUsage(t *testing.T) {
+	for _, tc := range []struct {
+		name, usage, wantInput string
+	}{
+		{"known", `"prompt_tokens":3,"completion_tokens":4,"total_tokens":7`, `"input_tokens":3`},
+		{"known zero", `"prompt_tokens":0,"completion_tokens":4,"total_tokens":4`, `"input_tokens":0`},
+		{"absent", `"completion_tokens":4`, ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			chunks := []string{
+				`{"choices":[{"index":0,"delta":{"role":"assistant","content":""}}]}`,
+				`{"choices":[{"index":0,"delta":{"content":"OK"}}]}`,
+				`{"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":{` + tc.usage + `}}`,
+				"[DONE]",
+			}
+			var output []string
+			result := OpenAIStreamToAnthropicSSEObserved(pullItems(chunks), "m", func(s string) { output = append(output, s) }, StreamObservationOptions{})
+			if !result.Completed || result.Err != nil {
+				t.Fatalf("stream did not complete: %+v", result)
+			}
+			var terminal string
+			for _, event := range output {
+				if strings.HasPrefix(event, "event: message_delta\n") {
+					terminal = event
+				}
+			}
+			if !strings.Contains(terminal, `"output_tokens":4`) {
+				t.Fatalf("terminal output usage changed: %s", terminal)
+			}
+			if tc.wantInput == "" {
+				if strings.Contains(terminal, `"input_tokens"`) {
+					t.Fatalf("missing source input was fabricated: %s", terminal)
+				}
+			} else if !strings.Contains(terminal, tc.wantInput) {
+				t.Fatalf("late source input was not preserved: %s", terminal)
+			}
+		})
 	}
 }
 
