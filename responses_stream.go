@@ -445,8 +445,7 @@ func bridgeFields(s *observedStream, object map[string]any, known, prefix string
 }
 
 func bridgeReplay(s *observedStream, object map[string]any, prefix string) {
-	displayFinal := s.assessment.Conversion == ConversionChatToResponses && !s.assessment.Requirements.Replay && (
-		(prefix == "response" && responseHasFinalDisplayPhase(object)) ||
+	displayFinal := s.assessment.Conversion == ConversionChatToResponses && !s.assessment.Requirements.Replay && ((prefix == "response" && responseHasFinalDisplayPhase(object)) ||
 		(strings.HasPrefix(prefix, "output.") && finalDisplayPhaseItem(object)))
 	inferred := InferFidelityRequirements(object)
 	if displayFinal {
