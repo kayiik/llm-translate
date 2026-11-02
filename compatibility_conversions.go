@@ -150,6 +150,16 @@ func ChatToResponsesWithReport(model string, messages []map[string]any, kw map[s
 		if value == nil || supported[key] {
 			continue
 		}
+		if key == "stream_options" {
+			options, ok := asMap(value)
+			include, valid := options["include_usage"].(bool)
+			if !stream || !ok || !valid || len(options) != 1 {
+				losses = append(losses, material(key, LossUnsupported, "only stream_options.include_usage can be represented by the Responses terminal"))
+			} else if include {
+				losses = append(losses, advisory(key+".include_usage", LossRenamed, "Responses terminal usage becomes the final Chat usage event"))
+			}
+			continue
+		}
 		if key == "response_format" {
 			if _, needed, ok := responsesTextFormat(value); ok {
 				if needed {
@@ -299,6 +309,12 @@ func ResponsesRequestToChatWithReport(payload map[string]any) (ConversionResult[
 // ResponsesToChatWithReport converts a Responses object with fidelity findings.
 func ResponsesToChatWithReport(model string, response map[string]any) ConversionResult[map[string]any] {
 	var losses []Loss
+	if status := response["status"]; status != nil && status != "completed" && status != "incomplete" {
+		losses = append(losses, material("status", LossUnsupported, "source response has no completed or incomplete answer"))
+	}
+	if response["error"] != nil {
+		losses = append(losses, material("error", LossDropped, "source response error cannot become a Chat completion"))
+	}
 	_, usageReport := responsesUsageWithReport(response["usage"])
 	losses = append(losses, usageReport.Losses...)
 	if output, ok := asList(response["output"]); ok {
@@ -312,6 +328,14 @@ func ResponsesToChatWithReport(model string, response map[string]any) Conversion
 				losses = append(losses, material(fmt.Sprintf("output.%d", i), LossDropped, "Responses output item is not representable by Chat"))
 			}
 			if kind == "message" {
+				if item["phase"] != nil {
+					path := fmt.Sprintf("output.%d.phase", i)
+					if finalDisplayPhase(response, item) {
+						losses = append(losses, advisory(path, LossDropped, "final-answer phase is omitted from Chat display; native replay requires Responses"))
+					} else {
+						losses = append(losses, material(path, LossDropped, "Chat cannot preserve this native message phase"))
+					}
+				}
 				if content, ok := asList(item["content"]); ok {
 					for j, rawPart := range content {
 						part, _ := asMap(rawPart)
@@ -319,6 +343,11 @@ func ResponsesToChatWithReport(model string, response map[string]any) Conversion
 							losses = append(losses, material(fmt.Sprintf("output.%d.content.%d", i, j), LossDropped, "Responses content part is not representable by Chat"))
 						} else if annotations, ok := asList(part["annotations"]); ok && len(annotations) > 0 {
 							losses = append(losses, material(fmt.Sprintf("output.%d.content.%d.annotations", i, j), LossDropped, "text annotations are not emitted by Chat"))
+						}
+						if part["logprobs"] != nil {
+							if logprobs, ok := asList(part["logprobs"]); !ok || len(logprobs) > 0 {
+								losses = append(losses, material(fmt.Sprintf("output.%d.content.%d.logprobs", i, j), LossDropped, "source log probabilities are not emitted by Chat"))
+							}
 						}
 					}
 				}
@@ -328,7 +357,18 @@ func ResponsesToChatWithReport(model string, response map[string]any) Conversion
 	if response["status"] == "incomplete" && !responsesIncompleteMaxTokens(response) {
 		losses = append(losses, material("incomplete_details.reason", LossApproximated, "Chat cannot preserve this incomplete reason"))
 	}
-	return ConversionResult[map[string]any]{Value: ResponsesToChat(model, response), Report: NewReport(losses...)}
+	if usage := response["tool_usage"]; usage != nil {
+		if emptyResponseToolUsage(usage) {
+			losses = append(losses, advisory("tool_usage", LossDropped, "zero source tool usage has no billing effect"))
+		} else {
+			losses = append(losses, material("tool_usage", LossDropped, "nonzero provider tool usage is not represented by Chat"))
+		}
+	}
+	chat := ResponsesToChat(model, response)
+	if value, ok := asMap(response["copilot_usage"]); ok {
+		chat["copilot_usage"] = value
+	}
+	return ConversionResult[map[string]any]{Value: chat, Report: NewReport(losses...)}
 }
 
 // ChatResponseToResponsesWithReport converts a Chat response with fidelity findings.

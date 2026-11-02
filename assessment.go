@@ -1,6 +1,7 @@
 package translate
 
 import (
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strconv"
@@ -62,6 +63,10 @@ type Assessment struct {
 }
 
 func InferFidelityRequirements(payload map[string]any) FidelityRequirements {
+	return inferFidelityRequirements(payload, false)
+}
+
+func inferFidelityRequirements(payload map[string]any, displayFinalAnswer bool) FidelityRequirements {
 	r := FidelityRequirements{Content: true}
 	if payload["response_format"] != nil {
 		r.Schema = true
@@ -98,6 +103,9 @@ func InferFidelityRequirements(payload map[string]any) FidelityRequirements {
 			r.Billing = true
 		}
 		if replayField(key, object) {
+			if displayFinalAnswer && key == "phase" && finalDisplayPhase(payload, object) {
+				return
+			}
 			r.Replay = true
 		}
 	})
@@ -105,7 +113,7 @@ func InferFidelityRequirements(payload map[string]any) FidelityRequirements {
 }
 
 func AssessConversion(id ConversionID, phase ObservationPhase, payload map[string]any, requirements FidelityRequirements) Assessment {
-	inferred := InferFidelityRequirements(payload)
+	inferred := inferFidelityRequirements(payload, id == ConversionChatToResponses && phase == PhaseResponse)
 	r := FidelityRequirements{Content: requirements.Content || inferred.Content, Tools: requirements.Tools || inferred.Tools, Schema: requirements.Schema || inferred.Schema, Billing: requirements.Billing || inferred.Billing, Replay: requirements.Replay || inferred.Replay}
 	a := Assessment{Conversion: id, Phase: phase, Feasibility: FeasibilityUnknown, Requirements: r}
 	if payload == nil || (phase != PhaseRequest && phase != PhaseResponse) {
@@ -128,7 +136,8 @@ func AssessConversion(id ConversionID, phase ObservationPhase, payload map[strin
 						kw[k] = v
 					}
 				}
-				losses = append(losses, ChatToResponsesWithReport("", messages, kw, false).Report.Losses...)
+				stream, _ := payload["stream"].(bool)
+				losses = append(losses, ChatToResponsesWithReport("", messages, kw, stream).Report.Losses...)
 				known = "model messages stream max_tokens max_completion_tokens reasoning_effort temperature top_p tools tool_choice metadata response_format n stop seed stream_options parallel_tool_calls"
 			} else {
 				losses = append(losses, OpenAIMessagesToAnthropicWithReport(messages).Report.Losses...)
@@ -203,6 +212,9 @@ func AssessConversion(id ConversionID, phase ObservationPhase, payload map[strin
 	}
 	for k, v := range payload {
 		if v != nil && !assessmentKnown(known, k) {
+			if phase == PhaseResponse && id == ConversionChatToResponses && knownResponseDisplayMetadata(k, v) {
+				continue
+			}
 			a.UnknownPaths = append(a.UnknownPaths, k)
 		}
 	}
@@ -315,6 +327,69 @@ func AssessConversion(id ConversionID, phase ObservationPhase, payload map[strin
 		}
 	}
 	return a
+}
+
+// A single completed final message may be displayed as Chat. A native replay,
+// another message phase, or an incomplete response needs the original item.
+func finalDisplayPhase(response, item map[string]any) bool {
+	if response["status"] != "completed" || item["type"] != "message" || item["role"] != "assistant" || item["status"] != "completed" || item["phase"] != "final_answer" {
+		return false
+	}
+	messages := 0
+	for _, raw := range mustList(response["output"]) {
+		if output, ok := asMap(raw); ok && output["type"] == "message" {
+			messages++
+		}
+	}
+	return messages == 1
+}
+
+func knownResponseDisplayMetadata(key string, value any) bool {
+	switch key {
+	case "completed_at":
+		_, ok := usageInteger(value)
+		return ok
+	case "frequency_penalty", "presence_penalty":
+		switch value.(type) {
+		case int, int64, float64, json.Number:
+			return true
+		}
+		return false
+	case "prompt_cache_key", "prompt_cache_retention", "safety_identifier":
+		_, ok := value.(string)
+		return ok
+	case "copilot_usage":
+		_, ok := asMap(value)
+		return ok
+	case "tool_usage":
+		return emptyResponseToolUsage(value)
+	}
+	return false
+}
+
+func emptyResponseToolUsage(value any) bool {
+	if _, ok := asMap(value); !ok {
+		return false
+	}
+	empty := true
+	walkFidelity(value, "", func(path, _ string, value any, _ map[string]any) {
+		switch path {
+		case "image_gen", "web_search", "image_gen.input_tokens_details", "image_gen.output_tokens_details":
+			if _, ok := asMap(value); !ok {
+				empty = false
+			}
+		case "image_gen.input_tokens", "image_gen.output_tokens", "image_gen.total_tokens",
+			"image_gen.input_tokens_details.image_tokens", "image_gen.input_tokens_details.text_tokens",
+			"image_gen.output_tokens_details.image_tokens", "image_gen.output_tokens_details.text_tokens",
+			"web_search.num_requests":
+			if count, ok := usageInteger(value); !ok || count != 0 {
+				empty = false
+			}
+		default:
+			empty = false
+		}
+	})
+	return empty
 }
 
 func assessmentMessages(value any) ([]map[string]any, error) {
@@ -459,6 +534,9 @@ func assessmentNestedUnknowns(payload map[string]any) []string {
 				known := partFields(part)
 				if root == "output" && part["type"] == "output_text" {
 					known += " annotations"
+					if logprobs, ok := asList(part["logprobs"]); ok && len(logprobs) == 0 {
+						known += " logprobs"
+					}
 				}
 				check(part, fmt.Sprintf("%s.content.%d", path, j), known)
 				if nested, ok := asMap(part["image_url"]); ok {

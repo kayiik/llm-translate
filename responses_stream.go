@@ -436,15 +436,37 @@ func bridgeGate(s *observedStream, quality CompletionQuality) bool {
 func bridgeFields(s *observedStream, object map[string]any, known, prefix string) {
 	for key, value := range object {
 		if value != nil && !assessmentKnown(known, key) {
+			if prefix == "response" && s.assessment.Conversion == ConversionChatToResponses && knownResponseDisplayMetadata(key, value) {
+				continue
+			}
 			s.unknown(prefix + "." + key)
 		}
 	}
 }
 
 func bridgeReplay(s *observedStream, object map[string]any, prefix string) {
+	displayFinal := s.assessment.Conversion == ConversionChatToResponses && !s.assessment.Requirements.Replay && (
+		(prefix == "response" && responseHasFinalDisplayPhase(object)) ||
+		(strings.HasPrefix(prefix, "output.") && finalDisplayPhaseItem(object)))
 	inferred := InferFidelityRequirements(object)
+	if displayFinal {
+		if prefix == "response" {
+			inferred = inferFidelityRequirements(object, true)
+		} else {
+			copy := make(map[string]any, len(object))
+			for key, value := range object {
+				if key != "phase" {
+					copy[key] = value
+				}
+			}
+			inferred = InferFidelityRequirements(copy)
+		}
+	}
 	if inferred.Replay {
 		s.assessment.Requirements.Replay = true
+	}
+	if displayFinal && !s.assessment.Requirements.Replay {
+		s.add(advisory(prefix+".phase", LossDropped, "final-answer phase is omitted from the Chat display stream"))
 	}
 	if !s.assessment.Requirements.Replay {
 		return
@@ -452,9 +474,26 @@ func bridgeReplay(s *observedStream, object map[string]any, prefix string) {
 	bridgeFeature(s, FidelityReplay)
 	walkFidelity(object, prefix, func(path, key string, value any, item map[string]any) {
 		if present(value) && (replayField(key, item) || (key == "id" && (item["type"] == "reasoning" || item["type"] == "message" || item["type"] == "function_call"))) {
+			if displayFinal && key == "phase" && item["type"] == "message" && item["phase"] == "final_answer" {
+				return
+			}
 			s.add(material(path, LossDropped, "opaque native continuation state is not representable by this bridge"))
 		}
 	})
+}
+
+func finalDisplayPhaseItem(item map[string]any) bool {
+	return item["type"] == "message" && item["role"] == "assistant" && item["phase"] == "final_answer" &&
+		(item["status"] == "in_progress" || item["status"] == "completed")
+}
+
+func responseHasFinalDisplayPhase(response map[string]any) bool {
+	for _, raw := range mustList(response["output"]) {
+		if item, ok := asMap(raw); ok && finalDisplayPhase(response, item) {
+			return true
+		}
+	}
+	return false
 }
 
 func bridgeFeature(s *observedStream, feature FidelityFeature) {

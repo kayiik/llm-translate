@@ -34,6 +34,9 @@ func ResponsesSSEToOpenAIChunksObserved(events func() (string, bool), model stri
 			b.sequenceSeen = true
 		}
 		known := "type sequence_number response response_id output_index item item_id content_index part delta text refusal arguments annotation logprobs error code message param summary_index"
+		if kind == "response.metadata" {
+			known += " metadata"
+		}
 		// Responses stream padding is enabled by default upstream. It is
 		// transport metadata, not caller content or a control to disable.
 		if strings.HasSuffix(kind, ".delta") {
@@ -133,6 +136,12 @@ func ResponsesSSEToOpenAIChunksObserved(events func() (string, bool), model stri
 			index, _ := bridgeIndex(event, "output_index")
 			content, _ := bridgeIndex(event, "content_index")
 			b.s.add(material(fmt.Sprintf("output.%d.content.%d.annotations", index, content), LossDropped, "native annotations are not emitted by Chat"))
+		case "response.metadata":
+			if !b.s.assessment.Requirements.Replay && safeDisplayModerationMetadata(event["metadata"]) {
+				b.s.add(advisory("$event.metadata", LossDropped, "unblocked provider moderation metadata is not a Chat event"))
+			} else {
+				b.s.add(material("$event.metadata", LossDropped, "provider moderation or unknown metadata cannot be silently dropped"))
+			}
 		case "response.completed", "response.incomplete":
 			response, ok := asMap(event["response"])
 			if !ok {
@@ -219,6 +228,48 @@ func ResponsesSSEToOpenAIChunksObserved(events func() (string, bool), model stri
 		}
 	}
 	return b.s.finish(quality)
+}
+
+func safeDisplayModerationMetadata(raw any) bool {
+	metadata, ok := asMap(raw)
+	if !ok || len(metadata) != 1 {
+		return false
+	}
+	moderation, ok := asMap(metadata["openai_chatgpt_moderation_metadata"])
+	if !ok || len(moderation) != 4 {
+		return false
+	}
+	for _, key := range []string{"generation", "tool_call", "tool_response"} {
+		value, ok := asMap(moderation[key])
+		if !ok || len(value) != 0 {
+			return false
+		}
+	}
+	prompt, ok := asMap(moderation["prompt"])
+	if !ok || len(prompt) != 1 {
+		return false
+	}
+	omnimod, ok := asMap(prompt["omnimod"])
+	if !ok || len(omnimod) != 2 {
+		return false
+	}
+	if _, ok := omnimod["protection_type"].(string); !ok {
+		return false
+	}
+	outputs, ok := asList(omnimod["outputs"])
+	if !ok || len(outputs) == 0 {
+		return false
+	}
+	for _, raw := range outputs {
+		output, ok := asMap(raw)
+		if !ok || output["is_blocked"] != false {
+			return false
+		}
+		if _, ok := asList(output["results"]); !ok {
+			return false
+		}
+	}
+	return true
 }
 
 type nativeBridgeItem struct {
